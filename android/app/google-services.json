@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "677225758780",
+    "project_id": "meu-personal-922ee",
+    "storage_bucket": "meu-personal-922ee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677225758780:android:255d80bda79a340d798339",
+        "android_client_info": {
+          "package_name": "com.example.tcc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBalH5-KkkjMSovaZ-PmmoL5N3RNnF2afQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
