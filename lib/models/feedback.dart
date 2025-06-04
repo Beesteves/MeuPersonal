@@ -1,20 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FeedbackModel {
   final String id;
   final String alunoId;
   final String treinoId;
   final DateTime data;
-  final String textoFB;
-  final String videoFB;
-  final Map<String, double> cargas; // Map<idExercicio, carga>
+  final String? textoFB;
+  final String? videoFB;
+  final Map<String, int>? cargas; // Map<idExercicio, carga>
 
   FeedbackModel({
     required this.id,
     required this.alunoId,
     required this.treinoId,
     required this.data,
-    required this.textoFB,
-    required this.videoFB,
-    required this.cargas,
+    this.textoFB,
+    this.videoFB,
+    this.cargas,
   });
 
   factory FeedbackModel.fromMap(Map<String, dynamic> map, String id) {
@@ -22,10 +24,10 @@ class FeedbackModel {
       id: id,
       alunoId: map['alunoId'],
       treinoId: map['treinoId'],
-      data: (map['data']).toDate(),
+      data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
       textoFB: map['textoFB'],
       videoFB: map['videoFB'],
-      cargas: Map<String, double>.from(map['cargas']),
+      cargas: Map<String, int>.from(map['cargas']),
     );
   }
 

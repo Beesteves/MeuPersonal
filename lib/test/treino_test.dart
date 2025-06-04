@@ -1,27 +1,58 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-
+import 'package:tcc/models/exercicio.dart';
+import 'package:tcc/models/item_treino.dart';
+import 'package:tcc/models/metodo.dart';
+import 'package:tcc/models/treino.dart';
 void main() {
-  test('Adicionar treino no Firestore simulado', () async {
-    final firestore = FakeFirebaseFirestore();
+  group('Treino Model', () {
+    test('toMap/fromMap', () {
+      final item1 = ItemTreino(
+        id: '1',
+        exercicioId: 'e1',
+        metodoId: 'm1',
+        numSerie: 3,
+        numRepeticao: 20,
+      );
+      final item2 = ItemTreino(
+        id: '2',
+        exercicioId: 'e2',
+        metodoId: 'm1',
+        numSerie: 5,
+        numRepeticao: 10,
+      );
+      final treino = Treino(
+        id: 't1',
+        nome: 'Treino A',
+        duracao: 12,
+        itens: [item1, item2],
+      );
+      final map = treino.toMap();
+      final novo = Treino.fromMap(map, 't1');
 
-    final treinoData = {
-      'nome': 'Treino A',
-      'duracao': DateTime(2024, 5, 2).toIso8601String(),
-      'itens': [
-        {
-          'exercicioId': 'e1',
-          'metodoId': 'm1',
-          'numSerie': 3,
-          'numRepeticao': 12,
-        }
-      ]
-    };
+      expect(novo.nome, equals(treino.nome));
+      expect(novo.itens.first.numSerie, equals(item1.numSerie));
+    });
 
-    await firestore.collection('treinos').add(treinoData);
+    test('Lista de ItensTreino é mantida', () {
+      final item1 = ItemTreino(
+        id: '1',
+        exercicioId: 'e3',
+        metodoId: 'm1',
+        numSerie: 4,
+        numRepeticao: 12,
+      );
+      final item2 = ItemTreino(
+        id: '2',
+        exercicioId: 'e2',
+        metodoId: 'm2',
+        numSerie: 3,
+        numRepeticao: 10,
+      );
+      final treino = Treino(id: 't2', nome: 'Treino B', duracao: 12, itens: [item1, item2]);
+      final map = treino.toMap();
+      final novo = Treino.fromMap(map, 't2');
 
-    final snapshot = await firestore.collection('treinos').get();
-    expect(snapshot.docs.length, 1);
-    expect(snapshot.docs.first.data()['nome'], 'Treino A');
+      expect(novo.itens.length, equals(2));
+    });
   });
 }

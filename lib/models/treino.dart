@@ -15,19 +15,34 @@ class Treino {
   });
 
   factory Treino.fromMap(Map<String, dynamic> map, String id) {
+    final itensRaw = map['itens'];
+  
+    List<ItemTreino> itensConvertidos = [];
+
+    if (itensRaw is List) {
+      itensConvertidos = itensRaw
+          .where((e) => e is Map<String, dynamic> && e['id'] != null)
+          .map((e) => ItemTreino.fromMap(e as Map<String, dynamic>, e['id'] as String))
+          .toList();
+    }
+
     return Treino(
       id: id,
-      nome: map['nome'],
-      duracao: map['duracao'],
-      itens: (map['itens'] as List).map((e) => ItemTreino.fromMap(e, e['id'])).toList(),
+      nome: map['nome'] ?? '',
+      duracao: map['duracao'] ?? '',
+      itens: itensConvertidos,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nome': nome,
-      'duracao': duracao,
-      'itens': itens.map((e) => e.toMap()).toList(),
+    'nome': nome,
+    'duracao': duracao,
+    'itens': itens.map((item) {
+      final itemMap = item.toMap();
+      itemMap['id'] = item.id;
+      return itemMap;
+    }).toList(),
     };
   }
 }

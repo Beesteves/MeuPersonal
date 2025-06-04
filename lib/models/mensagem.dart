@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Mensagem {
   final String id;
   final String destinatarioId;
@@ -21,7 +23,7 @@ class Mensagem {
       destinatarioId: map['destinatarioId'],
       remetenteId: map['remetenteId'],
       mensagem: map['mensagem'],
-      data: (map['data']).toDate(),
+      data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
       feedbackId: map['feedbackId'],
     );
   }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Evolucao {
   final String id;
   final DateTime data;
@@ -14,7 +16,7 @@ class Evolucao {
   factory Evolucao.fromMap(Map<String, dynamic> map, String id) {
     return Evolucao(
       id: id,
-      data: (map['data']).toDate(),
+      data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
       exercicioId: map['exercicioId'],
       carga: map['carga'].toDouble(),
     );

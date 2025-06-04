@@ -1,12 +1,12 @@
 class ItemTreino {
-  final String id;
+  final String? id;
   final String exercicioId;
   final String metodoId;
   final int numSerie;
   final int numRepeticao;
 
   ItemTreino({
-    required this.id,
+    this.id,
     required this.exercicioId,
     required this.metodoId,
     required this.numSerie,
@@ -24,11 +24,11 @@ class ItemTreino {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'exercicioId': exercicioId,
-      'metodoId': metodoId,
-      'numSerie': numSerie,
-      'numRepeticao': numRepeticao,
-    };
-  }
+  return {
+    'exercicioId': exercicioId,
+    'metodoId': metodoId,
+    'numSerie': numSerie,
+    'numRepeticao': numRepeticao,
+  };
+}
 }
