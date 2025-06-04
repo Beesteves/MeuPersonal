@@ -1,4 +1,4 @@
-import 'package:tcc/models/itemTreino.dart';
+import 'package:tcc/models/item_treino.dart';
 
 class Treino {
   final String id;
@@ -19,7 +19,7 @@ class Treino {
       id: id,
       nome: map['nome'],
       duracao: map['duracao'],
-      itens: (map['itens'] as List).map((e) => ItemTreino.fromMap(e)).toList(),
+      itens: (map['itens'] as List).map((e) => ItemTreino.fromMap(e, e['id'])).toList(),
     );
   }
 

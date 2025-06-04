@@ -1,22 +1,27 @@
 class Personal {
   final String id;
-  final String usuarioId;
+  
+  final String nome;
+  final String email;
 
   Personal({
     required this.id,
-    required this.usuarioId,
+    required this.nome,
+    required this.email,
   });
 
   factory Personal.fromMap(Map<String, dynamic> map, String id) {
     return Personal(
       id: id,
-      usuarioId: map['usuarioId'],
+      nome: map['nome'],
+      email: map['email'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'usuarioId': usuarioId,
+      'nome': nome,
+      'email': email,
     };
   }
 }

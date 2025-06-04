@@ -1,13 +1,15 @@
 class Aluno {
   final String id;
-  final String usuarioId;
+  final String nome;
+  final String email;
   final String assistenteId;
   final String chaveAcesso;
   final List<String> treinoId;
 
   Aluno({
     required this.id,
-    required this.usuarioId,
+    required this.nome,
+    required this.email,
     required this.assistenteId,
     required this.chaveAcesso,
     required this.treinoId,
@@ -16,7 +18,8 @@ class Aluno {
   factory Aluno.fromMap(Map<String, dynamic> map, String id) {
     return Aluno(
       id: id,
-      usuarioId: map['usuarioId'],
+      nome: map['nome'],
+      email: map['email'],
       assistenteId: map['assistenteId'],
       chaveAcesso: map['chaveAcesso'],
       treinoId: List<String>.from(map['treinoId'] ?? []),
@@ -25,7 +28,8 @@ class Aluno {
 
   Map<String, dynamic> toMap() {
     return {
-      'usuarioId': usuarioId,
+      'nome': nome,
+      'email': email,
       'assistenteId': assistenteId,
       'chaveAcesso': chaveAcesso,
       'treinoId': treinoId,
