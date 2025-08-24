@@ -46,5 +46,19 @@ class DaoUser{
     });
   }
 
+  static Stream<List<Usuario>> getAlunosDoAssitente(String assistenteId) {
+    return db
+        .collection('users')
+        .where('tipo', isEqualTo: 'aluno')
+        .where('assistenteId', isEqualTo: assistenteId)
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) {
+     return querySnapshot.docs.map((doc) {
+        return Usuario.fromMap(doc.data() as Map<String, dynamic>)
+          ..id = doc.id;
+      }).toList();
+    });
+  }
+
 
 }

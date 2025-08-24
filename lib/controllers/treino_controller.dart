@@ -2,37 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc/models/treino.dart';
 
 class DaoTreino {
-  static final FirebaseFirestore db = FirebaseFirestore.instance;
+  static final _db = FirebaseFirestore.instance;
+  static final _collection = _db.collection('treinos');
 
   static Future<void> salvar(Treino treino) async {
-    if (treino.nome.isEmpty || treino.itens.isEmpty|| treino.duracao.isNaN) {
-      print("Erro: Informacoes não podem ser vazias.");
-      return;
-    }
-    try{
-      await db.collection("treino").add(treino.toMap());
-      print("Treino salvo com sucesso, id: ${treino.id}");
-    }catch (error){
-          (error) => print("Erro ao salvar treino: $error");
-    }
+    // O ID será gerado automaticamente pelo Firestore
+    await _collection.add(treino.toMap());
   }
 
-  Stream<List<Treino>> getTreino() {
-    return db.collection('treino').snapshots().map((snapshot) {
+  static Future<void> editar(Treino treino) async {
+    await _collection.doc(treino.id).update(treino.toMap());
+  }
+
+  static Future<void> deletar(String id) async {
+    await _collection.doc(id).delete();
+  }
+
+  static Stream<List<Treino>> getTreinosDoPersonal(String personalId) {
+    return _collection
+        .where('personalId', isEqualTo: personalId)
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Treino.fromMap(doc.data(), doc.id);
+        final data = doc.data();
+        return Treino.fromMap(data, doc.id);
       }).toList();
     });
   }
-
-  Future<void> deletar(String id) async {
-    await db.collection("treino").doc(id).delete().catchError(
-          (e) => print("Erro ao deletar treino: $e"),
-        );
-  }
-
-  Future<void> editar(Treino treino) async{
-    await db.collection("treino").doc(treino.id).update(treino.toMap());
-  }
-
 }

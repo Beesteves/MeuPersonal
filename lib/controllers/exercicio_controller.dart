@@ -3,36 +3,63 @@ import 'package:tcc/models/exercicio.dart';
 
 class DaoExercicio {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
+  static const String _usersCollection = 'users';
+
+  static const String _exerciciosSubcollection = 'exercicios';
+
+  static CollectionReference<Map<String, dynamic>> _getExerciciosCollection(
+      String personalId) {
+    return db
+        .collection(_usersCollection)
+        .doc(personalId)
+
+        .collection(_exerciciosSubcollection);
+  }
 
   static Future<void> salvar(Exercicio exercicio) async {
-    if (exercicio.nome.isEmpty || exercicio.descricao.isEmpty || exercicio.tipo.isEmpty || exercicio.video.isEmpty) {
-      print("Erro: Informacoes não podem ser vazias.");
-      return;
+    if (exercicio.nome.isEmpty) {
+      throw Exception("Erro: o nome do exercício não pode ser vazio.");
     }
-    try{
-      await db.collection("exercicio").add(exercicio.toMap());
-      print("Exercicio salvo com sucesso, id: ${exercicio.id}");
-    }catch (error){
-          (error) => print("Erro ao salvar exercicio: $error");
+    try {
+      await _getExerciciosCollection(exercicio.personalId)
+          .add(exercicio.toMap());
+      print("Exercício salvo com sucesso.");
+    } catch (e) {
+      print("Erro ao salvar exercício: $e");
+      rethrow;
     }
   }
 
-  Stream<List<Exercicio>> getExercicio() {
-    return db.collection('exercicio').snapshots().map((snapshot) {
+  static Stream<List<Exercicio>> getExerciciodoPersonal(String personalId) {
+    return _getExerciciosCollection(personalId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Exercicio.fromMap(doc.data(), doc.id);
+        return Exercicio.fromMap(doc.data(), doc.id, personalId);
       }).toList();
     });
   }
 
-  Future<void> deletar(String id) async {
-    await db.collection("exercicio").doc(id).delete().catchError(
-          (e) => print("Erro ao deletar exercicio: $e"),
-        );
+  static Future<void> deletar(
+      String personalId, String exercicioId) async {
+    try {
+      await _getExerciciosCollection(personalId)
+          .doc(exercicioId)
+          .delete();
+      print("Exercício deletado com sucesso.");
+    } catch (e) {
+      print("Erro ao deletar exercício: $e");
+      rethrow;
+    }
   }
 
-  Future<void> editar(Exercicio exercicio) async{
-    await db.collection("exercicio").doc(exercicio.id).update(exercicio.toMap());
+  static Future<void> editar(Exercicio exercicio) async {
+    try {
+      await _getExerciciosCollection(exercicio.personalId)
+          .doc(exercicio.id)
+          .update(exercicio.toMap());
+      print("Exercício editado com sucesso.");
+    } catch (e) {
+      print("Erro ao editar exercício: $e");
+      rethrow;
+    }
   }
-
 }

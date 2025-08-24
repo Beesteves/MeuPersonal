@@ -23,6 +23,7 @@ void main() {
         nome: 'Treino A',
         duracao: 12,
         itens: [item1, item2],
+        personalId: 'p1',
       );
       final map = treino.toMap();
       final novo = Treino.fromMap(map, 't1');
@@ -46,7 +47,7 @@ void main() {
         numSerie: 3,
         numRepeticao: 10,
       );
-      final treino = Treino(id: 't2', nome: 'Treino B', duracao: 12, itens: [item1, item2]);
+      final treino = Treino(id: 't2', nome: 'Treino B', duracao: 12, itens: [item1, item2], personalId: 'p1');
       final map = treino.toMap();
       final novo = Treino.fromMap(map, 't2');
 

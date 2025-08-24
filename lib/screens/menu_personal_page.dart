@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tcc/screens/assistente_page.dart';
+import 'package:tcc/screens/exercicios_page.dart';
+import 'package:tcc/screens/metodo_page.dart';
+import 'package:tcc/screens/treino_page.dart';
 
 class MenuPagePersonal extends StatelessWidget {
   final String personalIds;
@@ -13,11 +16,36 @@ class MenuPagePersonal extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       mainAxisSpacing: 20,
       crossAxisSpacing: 20,
+      physics: const NeverScrollableScrollPhysics(), 
+      shrinkWrap: true,
       children: [
         _buildMenuButton(
-          icon: Icons.show_chart,
-          label: 'Evolução',
-          onTap: () {},
+          icon: Icons.fitness_center,
+          label: 'Exercícios',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ListaExerciciosPage(
+                  personalId: personalIds
+                  ),
+              )
+            );
+          },
+        ),
+        _buildMenuButton(
+          icon: Icons.account_tree,
+          label: 'Métodos',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ListaMetodosScreen(
+                  personalIds: personalIds,
+                ),
+              ),
+            );
+          }
         ),
         _buildMenuButton(
           icon: Icons.accessibility,
@@ -39,9 +67,18 @@ class MenuPagePersonal extends StatelessWidget {
           onTap: () {},
         ),
         _buildMenuButton(
-          icon: null,
-          label: '',
-          onTap: () {},
+          icon: Icons.fitness_center,
+          label: 'Treinos',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ListaTreinosPage(
+                  personalId: personalIds,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

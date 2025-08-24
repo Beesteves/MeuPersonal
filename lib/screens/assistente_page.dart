@@ -49,18 +49,18 @@ class ListaAssistentesScreen extends StatelessWidget {
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         subtitle: const Text(
-                          "Status: Ativo\nULTIMA TREINO: --/--/----\nTEMPO PARA TERMINAR: -- SEMANAS",
+                          "Tem alunos...",
                           style: TextStyle(fontSize: 14),
                         ),
                         trailing:
                             const Icon(Icons.chevron_right, size: 28),
                         onTap: () {
-                          Navigator.push(
+                          Navigator.push( // Navega para a lista de alunos do assistente
                             context,
                             MaterialPageRoute(
                               builder: (_) => ListaAlunosScreen(
-                                personalIds: a.id,
-                              ),
+                                assistenteIds: a.id,
+                              ), 
                             ),
                           );
                         },

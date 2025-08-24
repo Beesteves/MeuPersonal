@@ -4,12 +4,14 @@ class Treino {
   final String id;
   final String nome;
   final int duracao;
+  final String personalId;
   final List<ItemTreino> itens;
 
 
   Treino({
     required this.id,
     required this.nome,
+    required this.personalId,
     required this.duracao,
     required this.itens,
   });
@@ -21,7 +23,7 @@ class Treino {
 
     if (itensRaw is List) {
       itensConvertidos = itensRaw
-          .where((e) => e is Map<String, dynamic> && e['id'] != null)
+          .where((e) => e is Map<String, dynamic> && e['id'] != null && e['id'] is String)
           .map((e) => ItemTreino.fromMap(e as Map<String, dynamic>, e['id'] as String))
           .toList();
     }
@@ -29,7 +31,8 @@ class Treino {
     return Treino(
       id: id,
       nome: map['nome'] ?? '',
-      duracao: map['duracao'] ?? '',
+      duracao: map['duracao'] ?? 0,
+      personalId: map['personalId'] ?? '',
       itens: itensConvertidos,
     );
   }
@@ -38,11 +41,8 @@ class Treino {
     return {
     'nome': nome,
     'duracao': duracao,
-    'itens': itens.map((item) {
-      final itemMap = item.toMap();
-      itemMap['id'] = item.id;
-      return itemMap;
-    }).toList(),
+    'personalId': personalId,
+    'itens': itens.map((item) => item.toMap()).toList(),
     };
   }
 }

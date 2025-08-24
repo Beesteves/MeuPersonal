@@ -1,5 +1,4 @@
  import 'package:flutter_test/flutter_test.dart';
-// import 'package:test/test.dart';
 import 'package:tcc/models/exercicio.dart';
 
 void main() {
@@ -12,7 +11,7 @@ void main() {
         'video': 'https://video.com/agachamento'
       };
 
-      final model = Exercicio.fromMap(map, 'abc123');
+      final model = Exercicio.fromMap(map, 'abc123', 'personalId');
 
       expect(model.id, 'abc123');
       expect(model.nome, 'Agachamento');

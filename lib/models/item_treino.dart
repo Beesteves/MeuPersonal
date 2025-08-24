@@ -15,7 +15,7 @@ class ItemTreino {
 
   factory ItemTreino.fromMap(Map<String, dynamic> map, String id) {
     return ItemTreino(
-      id: map['id'],
+      id: id,
       exercicioId: map['exercicioId'],
       metodoId: map['metodoId'],
       numSerie: map['numSerie'],
@@ -25,6 +25,7 @@ class ItemTreino {
 
   Map<String, dynamic> toMap() {
   return {
+    'id': id,
     'exercicioId': exercicioId,
     'metodoId': metodoId,
     'numSerie': numSerie,

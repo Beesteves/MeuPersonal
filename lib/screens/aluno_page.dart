@@ -5,20 +5,32 @@ import 'package:tcc/screens/cadastro_page.dart';
 
 
 class ListaAlunosScreen extends StatelessWidget {
-  final String personalIds;
+  final String? personalIds;
+  final String? assistenteIds;
   
-  ListaAlunosScreen({super.key, required this.personalIds});
+  const ListaAlunosScreen({
+    super.key, 
+    this.personalIds,
+    this.assistenteIds,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bool isParaAssistente = assistenteIds != null;
+    // final String titulo =
+    //     isParaAssistente ? "Alunos de ${nomeAssistente ?? 'Assistente'}" : "Alunos";
+
     return Scaffold(
       backgroundColor: Colors.white,
+      // title: titulo,
       body: Column(
         children: [
           // Lista de alunos
           Expanded(
             child: StreamBuilder<List<Usuario>>(
-              stream: DaoUser.getAlunosDoPersonal(personalIds),
+              stream: isParaAssistente
+                ? DaoUser.getAlunosDoAssitente(assistenteIds!)
+                : DaoUser.getAlunosDoPersonal(personalIds!),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -45,7 +57,7 @@ class ListaAlunosScreen extends StatelessWidget {
                           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          "Status: Ativo\nULTIMA TREINO: --/--/----\nTEMPO PARA TERMINAR: -- SEMANAS",
+                          "Status: Ativo\nULTIMA TREINO: --/--/----\nTEMPO PARA TERMINAR: -- SEMANAS \nAssistente: ${a.assistenteId}",
                           style: const TextStyle(fontSize: 14),
                         ),
                         trailing: const Icon(Icons.chevron_right, size: 28),
@@ -59,31 +71,38 @@ class ListaAlunosScreen extends StatelessWidget {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CadastroPage(
-                      tipo: 'aluno',
-                      personalId: personalIds, // passa o vínculo
+          if (!isParaAssistente)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CadastroPage(
+                        tipo: 'aluno',
+                        personalId: personalIds!,
+                      ),
                     ),
+                  );
+                },
+                child: const Text(
+                  "+ Adicionar Aluno",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                );
-              },
-              child: const Text(
-                "+ Adicionar Aluno",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

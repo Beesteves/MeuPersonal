@@ -2,24 +2,27 @@ class Exercicio {
   final String id;
   final String nome;
   final String descricao;
-  final String tipo;
-  final String video;
+  final String? tipo;
+  final String? video;
+  final String personalId;
 
   Exercicio({
     required this.id,
     required this.nome,
     required this.descricao,
-    required this.tipo,
-    required this.video,
+    this.tipo,
+    this.video,
+    required this.personalId,
   });
 
-  factory Exercicio.fromMap(Map<String, dynamic> map, String id) {
+  factory Exercicio.fromMap(Map<String, dynamic> map, String id, String personalId,) {
     return Exercicio(
       id: id,
-      nome: map['nome'],
-      descricao: map['descricao'],
+      nome: map['nome'] ?? '',
+      descricao: map['descricao'] ?? '',
       tipo: map['tipo'],
       video: map['video'],
+      personalId: personalId,
     );
   }
 
@@ -27,6 +30,8 @@ class Exercicio {
     return {
       'nome': nome,
       'descricao': descricao,
+
+      
       'tipo': tipo,
       'video': video,
     };
