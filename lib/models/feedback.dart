@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 class FeedbackModel {
   final String id;
   final String alunoId;
   final String treinoId;
   final DateTime data;
-  final String? textoFB;
+  final Map<String, String>? textoFB;
   final String? videoFB;
   final Map<String, int>? cargas; // Map<idExercicio, carga>
 
   FeedbackModel({
-    required this.id,
+    String? id,
     required this.alunoId,
     required this.treinoId,
     required this.data,
     this.textoFB,
     this.videoFB,
     this.cargas,
-  });
+  }): id = id ?? const Uuid().v4(); 
 
   factory FeedbackModel.fromMap(Map<String, dynamic> map, String id) {
     return FeedbackModel(
@@ -25,7 +26,7 @@ class FeedbackModel {
       alunoId: map['alunoId'],
       treinoId: map['treinoId'],
       data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
-      textoFB: map['textoFB'],
+      textoFB: Map<String, String>.from(map['textoFB']),
       videoFB: map['videoFB'],
       cargas: Map<String, int>.from(map['cargas']),
     );

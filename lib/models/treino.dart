@@ -6,6 +6,7 @@ class Treino {
   final int duracao;
   final String personalId;
   final List<ItemTreino> itens;
+  final int feitos;
 
 
   Treino({
@@ -14,6 +15,7 @@ class Treino {
     required this.personalId,
     required this.duracao,
     required this.itens,
+    this.feitos = 0,
   });
 
   factory Treino.fromMap(Map<String, dynamic> map, String id) {
@@ -32,6 +34,7 @@ class Treino {
       id: id,
       nome: map['nome'] ?? '',
       duracao: map['duracao'] ?? 0,
+      feitos: map['feitos'] ?? 0,
       personalId: map['personalId'] ?? '',
       itens: itensConvertidos,
     );
@@ -42,6 +45,7 @@ class Treino {
     'nome': nome,
     'duracao': duracao,
     'personalId': personalId,
+    'feitos': feitos,
     'itens': itens.map((item) => item.toMap()).toList(),
     };
   }

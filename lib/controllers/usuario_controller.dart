@@ -60,5 +60,28 @@ class DaoUser{
     });
   }
 
+  static Stream<Usuario?> streamUsuarioById(String userId) {
+    return db.collection('users').doc(userId).snapshots().map((doc) {
+      if (doc.exists) {
+        return Usuario.fromMap(doc.data() as Map<String, dynamic>)
+          ..id = doc.id;
+      }
+      return null;
+    });
+  }
+
+  static definirAssistenteParaAluno(
+    String alunoId, String assistenteId) async {
+    try {
+      await db.collection('users').doc(alunoId).update({
+        'assistenteId': assistenteId,
+      });
+      print("✅ Assistente $assistenteId vinculado ao aluno $alunoId");
+    } catch (e) {
+      print("❌ Erro ao definir assistente: $e");
+      rethrow;
+    }
+  }
+
 
 }

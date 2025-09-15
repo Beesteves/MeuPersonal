@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc/controllers/usuario_controller.dart';
 import 'package:tcc/models/usuario.dart';
 import 'package:tcc/screens/cadastro_page.dart';
+import 'package:tcc/screens/perfil_aluno_page.dart';
 
 
 class ListaAlunosScreen extends StatelessWidget {
@@ -62,7 +63,12 @@ class ListaAlunosScreen extends StatelessWidget {
                         ),
                         trailing: const Icon(Icons.chevron_right, size: 28),
                         onTap: () {
-                          // navegar para detalhe do aluno (se quiser)
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => AlunoPerfilPage(alunoId: a.id, personalId: a.personalId!)
+                            )
+                          );
                         },
                       ),
                     );

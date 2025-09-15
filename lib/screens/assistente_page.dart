@@ -49,7 +49,7 @@ class ListaAssistentesScreen extends StatelessWidget {
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         subtitle: const Text(
-                          "Tem alunos...",
+                          "Tem alunos",
                           style: TextStyle(fontSize: 14),
                         ),
                         trailing:

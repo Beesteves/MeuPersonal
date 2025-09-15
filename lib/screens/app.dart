@@ -3,8 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc/screens/aluno_page.dart';
 import 'package:tcc/screens/base_scaffold.dart';
-import 'package:tcc/screens/menu_aluno_page.dart';
+import 'package:tcc/screens/screensAluno/menu_aluno_page.dart';
 import 'package:tcc/screens/menu_personal_page.dart';
+import 'package:tcc/screens/screensAluno/treinos_alunos_page.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -80,7 +81,7 @@ class _AppState extends State<App> {
     } else {
       // Aluno
       pages = [
-        const Center(child: Text("Página Treinos - Aluno")),
+        ListaTreinosAlunoScreen(alunoId: _userId ?? ""),
         const MenuPageAluno(),
         const Center(child: Text("Página Chat")),
       ];

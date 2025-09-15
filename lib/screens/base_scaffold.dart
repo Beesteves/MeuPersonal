@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class BaseScaffold extends StatelessWidget {
@@ -14,6 +15,11 @@ class BaseScaffold extends StatelessWidget {
     required this.onTabSelected,
   });
 
+  Future<void> _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacementNamed('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,17 +30,30 @@ class BaseScaffold extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: Colors.grey,
-            child: Center(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Título
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                // Botão de Logout
+                IconButton(
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  onPressed: () => _logout(context),
+                ),
+              ],
             ),
           ),
           Expanded(child: body),

@@ -5,17 +5,26 @@ class DaoFeed {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
   static Future<void> salvar(FeedbackModel feed) async {
-    if (feed.treinoId.isEmpty) {
-      print("Erro: campos não podem ser vazios.");
-      return;
-    }
-    try{
-      await db.collection("feedback").add(feed.toMap());
-      print("Feedback salvo com sucesso, id: ${feed.id}");
-    }catch (error){
-          (error) => print("Erro ao salvar Feedback: $error");
-    }
+  if (feed.treinoId.isEmpty || feed.alunoId.isEmpty) {
+    print("Erro: alunoId e treinoId não podem ser vazios.");
+    return;
   }
+  try {
+    final alunoRef = db.collection("users").doc(feed.alunoId);
+
+    // Usa o id do feedback como nome do documento
+    await alunoRef
+        .collection("feedback") // melhor nome no plural
+        .doc(feed.id) // gera sempre documento único
+        .set(feed.toMap());
+
+    print("✅ Feedback salvo com sucesso, id: ${feed.id}");
+  } catch (error) {
+    print("❌ Erro ao salvar Feedback: $error");
+    rethrow;
+  }
+}
+
 
   Stream<List<FeedbackModel>> getFeedback() {
     return db.collection('feedback').snapshots().map((snapshot) {
