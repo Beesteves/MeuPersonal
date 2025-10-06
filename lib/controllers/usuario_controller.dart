@@ -83,5 +83,21 @@ class DaoUser{
     }
   }
 
+  static Future<Usuario?> getUsuarioById(String userId) async {
+    try {
+      final doc = await db.collection('users').doc(userId).get();
+
+      if (doc.exists && doc.data() != null) {
+        return Usuario.fromMap(doc.data() as Map<String, dynamic>)
+          ..id = doc.id;
+      } else {
+        return null; // usuário não encontrado
+      }
+    } catch (e) {
+      print("❌ Erro ao buscar usuário: $e");
+      return null;
+    }
+  }
+
 
 }

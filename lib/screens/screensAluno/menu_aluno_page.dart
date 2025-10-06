@@ -1,37 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/controllers/usuario_controller.dart';
+import 'package:tcc/models/usuario.dart';
+import 'package:tcc/screens/evolucao_page.dart';
 
 class MenuPageAluno extends StatelessWidget {
-  const MenuPageAluno({super.key});
+  final String alunoId;
+
+  const MenuPageAluno({super.key, required this.alunoId});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: const EdgeInsets.all(20),
-      mainAxisSpacing: 20,
-      crossAxisSpacing: 20,
-      children: [
-        _buildMenuButton(
-          icon: Icons.show_chart,
-          label: 'Evolução',
-          onTap: () {},
-        ),
-        _buildMenuButton(
-          icon: null,
-          label: '',
-          onTap: () {},
-        ),
-        _buildMenuButton(
-          icon: Icons.person,
-          label: 'Perfil',
-          onTap: () {},
-        ),
-        _buildMenuButton(
-          icon: null,
-          label: '',
-          onTap: () {},
-        ),
-      ],
+    return FutureBuilder<Usuario?>(
+      future: DaoUser.getUsuarioById(alunoId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("Erro: ${snapshot.error}"));
+        }
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const Center(child: Text("Aluno não encontrado"));
+        }
+
+        final aluno = snapshot.data!; 
+
+        return GridView.count(
+          crossAxisCount: 2,
+          padding: const EdgeInsets.all(20),
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          children: [
+            _buildMenuButton(
+              icon: Icons.show_chart,
+              label: 'Evolução',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ExerciciosScreen(
+                      personalId: aluno.personalId ?? "", 
+                      alunoId: alunoId,
+                    ),
+                  ),
+                );
+              },
+            ),
+            _buildMenuButton(
+              icon: Icons.person,
+              label: 'Perfil',
+              onTap: () {},
+            ),
+            _buildMenuButton(
+              icon: null,
+              label: '',
+              onTap: () {},
+            ),
+            _buildMenuButton(
+              icon: null,
+              label: '',
+              onTap: () {},
+            ),
+          ],
+        );
+      },
     );
   }
 

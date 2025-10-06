@@ -21,25 +21,40 @@ class FeedbackModel {
   }): id = id ?? const Uuid().v4(); 
 
   factory FeedbackModel.fromMap(Map<String, dynamic> map, String id) {
-    return FeedbackModel(
-      id: id,
-      alunoId: map['alunoId'],
-      treinoId: map['treinoId'],
-      data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
-      textoFB: Map<String, String>.from(map['textoFB']),
-      videoFB: map['videoFB'],
-      cargas: Map<String, int>.from(map['cargas']),
-    );
+  DateTime data;
+  if (map['data'] is Timestamp) {
+    data = (map['data'] as Timestamp).toDate();
+  } else if (map['data'] is String) {
+    data = DateTime.tryParse(map['data']) ?? DateTime.now();
+  } else if (map['data'] is DateTime) {
+    data = map['data'];
+  } else {
+    data = DateTime.now();
+  }
+
+  return FeedbackModel(
+    id: id,
+    alunoId: map['alunoId'],
+    treinoId: map['treinoId'],
+    data: data,
+    textoFB: map['textoFB'] != null
+        ? Map<String, String>.from(map['textoFB'] as Map)
+        : null,
+    videoFB: map['videoFB'],
+    cargas: map['cargas'] != null
+        ? Map<String, int>.from(map['cargas'] as Map)
+        : null,
+  );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'alunoId': alunoId,
       'treinoId': treinoId,
-      'data': data,
-      'textoFB': textoFB,
+      'data': data.toIso8601String(),
+      'cargas': cargas != null ? Map<String, dynamic>.from(cargas!) : null,
+      'textoFB': textoFB != null ? Map<String, dynamic>.from(textoFB!) : null,
       'videoFB': videoFB,
-      'cargas': cargas,
     };
   }
 }

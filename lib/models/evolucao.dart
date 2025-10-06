@@ -1,31 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Evolucao {
-  final String id;
-  final DateTime data;
-  final String exercicioId;
+  final String data;
   final double carga;
 
   Evolucao({
-    required this.id,
     required this.data,
-    required this.exercicioId,
     required this.carga,
   });
 
   factory Evolucao.fromMap(Map<String, dynamic> map, String id) {
+    String dataString;
+
+    // Converte Timestamp → String (ISO8601)
+    if (map['data'] is Timestamp) {
+      dataString = (map['data'] as Timestamp).toDate().toIso8601String();
+    } else if (map['data'] is DateTime) {
+      dataString = (map['data'] as DateTime).toIso8601String();
+    } else {
+      dataString = map['data'].toString();
+    }
+
     return Evolucao(
-      id: id,
-      data: map['data'] is Timestamp    ? (map['data'] as Timestamp).toDate()    : map['data'],
-      exercicioId: map['exercicioId'],
-      carga: map['carga'].toDouble(),
+      data: dataString,
+      carga: (map['carga'] as num).toDouble(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'data': data,
-      'exercicioId': exercicioId,
       'carga': carga,
     };
   }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc/controllers/treino_controller.dart';
 import 'package:tcc/controllers/usuario_controller.dart';

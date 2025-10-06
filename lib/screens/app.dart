@@ -82,7 +82,7 @@ class _AppState extends State<App> {
       // Aluno
       pages = [
         ListaTreinosAlunoScreen(alunoId: _userId ?? ""),
-        const MenuPageAluno(),
+        MenuPageAluno(alunoId: _userId ?? ""),
         const Center(child: Text("Página Chat")),
       ];
       titles = ["TREINOS", "MENU", "CHAT"];
