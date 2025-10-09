@@ -53,17 +53,30 @@ class ListaTreinosAlunoScreen extends StatelessWidget {
                         trailing:
                             const Icon(Icons.chevron_right, size: 28),
                         onTap: () {
-                          Navigator.push( // Navega para a lista de alunos do assistente
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => RealizaTreinoPage(
-                                treino: t,
-                                personalId: t.personalId,
-                                alunoId: alunoId,
-                              ), 
-                            ),
-                          );     
-                        },
+                          if(t.feitos < t.duracao){
+                            Navigator.push( // Navega para a lista de alunos do assistente
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RealizaTreinoPage(
+                                  treino: t,
+                                  personalId: t.personalId,
+                                  alunoId: alunoId,
+                                ), 
+                              ),
+                            );     
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Treino já concluído! Você atingiu a duração máxima do seu treino. Entre em contato com seu treinador.',
+                                style: TextStyle(fontSize: 16),
+                                ),
+                                backgroundColor: Colors.redAccent,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },                        
                       ),
                     );
                   },

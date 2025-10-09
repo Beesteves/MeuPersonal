@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc/controllers/chat_controller.dart';
 import 'package:tcc/controllers/exercicio_controller.dart';
 import 'package:tcc/controllers/feedback_controller.dart';
 import 'package:tcc/controllers/metodo_controller.dart';
@@ -8,7 +9,7 @@ import 'package:tcc/models/feedback.dart';
 import 'package:tcc/models/metodo.dart';
 import 'package:tcc/models/treino.dart';
 import 'package:tcc/screens/barra_cima_scaffold.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 class RealizaTreinoPage extends StatefulWidget {
   final Treino treino;
@@ -149,6 +150,18 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
 
     // salva um NOVO feedback
     await DaoFeed.salvar(feedback);
+
+    //Envia feedback para mensagens
+    await DaoChat.enviarFeedbackComoMensagem(
+      chatId: "${widget.alunoId}_${widget.personalId}",
+      feedback: feedback,
+      treinoNome: widget.treino.nome,
+      exerciciosNomes: {
+        for (var item in widget.treino.itens) 
+        item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
+      }
+    );
+
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

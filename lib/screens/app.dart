@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tcc/screens/aluno_page.dart';
 import 'package:tcc/screens/base_scaffold.dart';
+import 'package:tcc/screens/contatos_page.dart';
 import 'package:tcc/screens/screensAluno/menu_aluno_page.dart';
 import 'package:tcc/screens/menu_personal_page.dart';
 import 'package:tcc/screens/screensAluno/treinos_alunos_page.dart';
@@ -75,7 +76,7 @@ class _AppState extends State<App> {
       pages = [
         ListaAlunosScreen(personalIds: _userId ?? ""),
         MenuPagePersonal(personalIds: _userId ?? ""),
-        const Center(child: Text("Página Chat")),
+        ContatosPage(userId: _userId ?? "", tipo: _tipoUsuario!),
       ];
       titles = ["ALUNOS", "MENU", "CHAT"];
     } else {
@@ -83,7 +84,7 @@ class _AppState extends State<App> {
       pages = [
         ListaTreinosAlunoScreen(alunoId: _userId ?? ""),
         MenuPageAluno(alunoId: _userId ?? ""),
-        const Center(child: Text("Página Chat")),
+        ContatosPage(userId: _userId ?? "", tipo: "aluno"),
       ];
       titles = ["TREINOS", "MENU", "CHAT"];
     }
