@@ -27,10 +27,8 @@ class AlunoPerfilPage extends StatelessWidget {
 
       return {'aluno': aluno, 'treinos': treinos};
     } catch (e) {
-      // Em um app real, use um serviço de log.
-      // O linter está configurado para ignorar prints.
       print('Erro ao buscar dados do perfil: $e');
-      rethrow; // Propaga o erro para ser tratado pelo FutureBuilder
+      rethrow; 
     }
   }
 
@@ -86,6 +84,7 @@ class _AlunoPerfilBody extends StatelessWidget {
           _ListaDeTreinos(
             treinos: treinos,
             personalId: aluno.personalId!,
+            aluno: aluno,
           ),
         ],
       ),
@@ -103,17 +102,12 @@ class _InformacoesAluno extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text("Nome: ${aluno.nome}",
-        //     style:
-        //         const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        // const SizedBox(height: 8),
-        // Text("Email: ${aluno.email}", style: const TextStyle(fontSize: 16)),
         const SizedBox(height: 8),
         if (aluno.assistenteId != null && aluno.assistenteId!.isNotEmpty)
           FutureBuilder<Usuario>(
               future: DaoUser.streamUsuarioById(aluno.assistenteId!).first.then((value) => value!),
               builder: (context, snapshot) {
-                return Text("Assistente: ${snapshot.data?.nome ?? 'Carregando...'}",
+                return Text("Assistente: ${snapshot.data?.nome ?? 'Carregando...'}    Inicio Acompanhamento: ${aluno.criadoEm.day.toString().padLeft(2, '0')}/${aluno.criadoEm.month.toString().padLeft(2, '0')}/${aluno.criadoEm.year}",
                     style: const TextStyle(fontSize: 16));
               }),
       ],
@@ -169,8 +163,9 @@ class _BotoesAcao extends StatelessWidget {
 class _ListaDeTreinos extends StatelessWidget {
   final List<Treino> treinos;
   final String personalId;
+  final Usuario aluno;
 
-  const _ListaDeTreinos({required this.treinos, required this.personalId, super.key});
+  const _ListaDeTreinos({required this.treinos, required this.personalId, required this.aluno});
 
   @override
   Widget build(BuildContext context) {
@@ -200,8 +195,27 @@ class _ListaDeTreinos extends StatelessWidget {
                 child: ListTile(
                   title: Text(treino.nome,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('Duração: ${treino.duracao} semanas   Realizados: '),//precisa colocar o numero de vezes aqui
-                  trailing: const Icon(Icons.chevron_right),
+                  subtitle: Text(
+                    "Duração: ${treino.duracao} semanas   Realizados: ${treino.feitos}\n"
+                    "Status: ${treino.status}"),
+                  trailing: PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value){
+                      if (value == 'deletar'){
+                        DaoTreino.desatribuir(treino.id, aluno.id);
+                      }
+                      else if (value == 'bloquear'){
+                        DaoTreino.bloquear(treino, aluno.id);
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                      const <PopupMenuEntry<String>>[
+                        PopupMenuItem<String>(
+                          value: 'deletar', child: Text('Deletar')),
+                        PopupMenuItem<String>(
+                          value: 'bloquear', child: Text('Bloquear')),
+                      ]
+                  ),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -359,103 +373,6 @@ void _showDialogoSelecaoAssistente(BuildContext context, Usuario aluno) {
   );
 }
 
-/// Mostra um diálogo para selecionar um modelo de treino e atribuí-lo ao aluno.
-// void _showDialogoSelecaoModelo(BuildContext context, Usuario aluno,
-//     String personalId) {
-//   if (aluno.personalId == null || aluno.personalId!.isEmpty) {
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(
-//           content: Text('Erro: Aluno não está vinculado a um personal.')),
-//     );
-//     return;
-//   }
-
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext dialogContext) {
-//       return FutureBuilder<List<Treino>>(
-//         future: DaoTreino.getTreinosDoPersonal(personalId).first,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const AlertDialog(
-//               title: Text('Selecionar Modelo'),
-//               content: Center(child: CircularProgressIndicator()),
-//             );
-//           }
-
-//           if (snapshot.hasError || !snapshot.hasData) {
-//             return AlertDialog(
-//               title: const Text('Erro'),
-//               content:
-//                   const Text('Não foi possível carregar os modelos de treino.'),
-//               actions: [
-//                 TextButton(
-//                   onPressed: () => Navigator.pop(dialogContext),
-//                   child: const Text('Fechar'),
-//                 ),
-//               ],
-//             );
-//           }
-
-//           final modelos = snapshot.data!
-//               .where((t) => t.alunoId == null || t.alunoId!.isEmpty)
-//               .toList();
-
-//           if (modelos.isEmpty) {
-//             return AlertDialog(
-//               title: const Text('Selecionar Modelo'),
-//               content: const Text(
-//                   'Nenhum modelo de treino encontrado. Crie um novo treino sem associar a um aluno para usá-lo como modelo.'),
-//               actions: [
-//                 TextButton(
-//                   onPressed: () => Navigator.pop(dialogContext),
-//                   child: const Text('Fechar'),
-//                 ),
-//               ],
-//             );
-//           }
-
-//           return AlertDialog(
-//             title: const Text('Selecionar Modelo de Treino'),
-//             content: SizedBox(
-//               width: double.maxFinite,
-//               child: ListView.builder(
-//                 shrinkWrap: true,
-//                 itemCount: modelos.length,
-//                 itemBuilder: (context, index) {
-//                   final modelo = modelos[index];
-//                   return ListTile(
-//                     title: Text(modelo.nome),
-//                     onTap: () async {
-//                       try {
-//                         await DaoTreino.atribuirTreino(modelo, aluno.id);
-//                         Navigator.pop(dialogContext); // Fecha o diálogo
-//                         ScaffoldMessenger.of(context).showSnackBar(
-//                           SnackBar(
-//                               content: Text(
-//                                   'Treino "${modelo.nome}" atribuído com sucesso!')),
-//                         );
-//                         // Recarrega a página para mostrar o novo treino
-//                         Navigator.pushReplacement(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (context) => AlunoPerfilPage(
-//                                     alunoId: aluno.id,
-//                                     personalId: aluno.personalId!)));
-//                       } catch (e) {
-//                         Navigator.pop(dialogContext);
-//                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao atribuir treino: $e')));
-//                       }
-//                     },
-//                   );
-//                 },
-//               ),
-//             ),
-//           );
-//         },
-//       );
-//     },
-//   );
 void _showDialogoSelecaoModelo(
   BuildContext context,
   Usuario aluno,
@@ -527,6 +444,7 @@ void _showDialogoSelecaoModelo(
                         : null,
                     onTap: () async {
                       try {
+                        modelo.data = DateTime.now();
                         await DaoTreino.atribuirTreino(modelo, aluno.id);
                         Navigator.pop(dialogContext);
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -20,8 +20,12 @@ Color _hexToColor(String hexCode) {
 
 class ListaMetodosScreen extends StatelessWidget {
   final String personalIds;
+  final String userTipo;
 
-  const ListaMetodosScreen({super.key, required this.personalIds});
+
+  const ListaMetodosScreen({super.key, required this.personalIds, required this.userTipo});
+
+  bool get podeEditar => userTipo == 'personal';
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,8 @@ class ListaMetodosScreen extends StatelessWidget {
                           metodo.descricao,
                           style: TextStyle(fontSize: 14, color: textColor.withOpacity(0.9)),
                         ),
-                        trailing: PopupMenuButton<String>(
+                        trailing: podeEditar?
+                        PopupMenuButton<String>(
                           icon: const Icon(Icons.more_vert),
                           onSelected: (value) {
                             if (value == 'editar') {
@@ -122,7 +127,7 @@ class ListaMetodosScreen extends StatelessWidget {
                             const PopupMenuItem<String>(
                                 value: 'deletar', child: Text('Deletar')),
                           ],
-                        ),
+                        ):null,
                       ),
                     );
                   },
@@ -130,6 +135,7 @@ class ListaMetodosScreen extends StatelessWidget {
               },
             ),
           ),
+          if (podeEditar)
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(

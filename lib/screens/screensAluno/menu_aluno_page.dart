@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tcc/controllers/usuario_controller.dart';
 import 'package:tcc/models/usuario.dart';
 import 'package:tcc/screens/evolucao_page.dart';
+import 'package:tcc/screens/perfil.dart';
 
 class MenuPageAluno extends StatelessWidget {
   final String alunoId;
@@ -49,18 +50,25 @@ class MenuPageAluno extends StatelessWidget {
             _buildMenuButton(
               icon: Icons.person,
               label: 'Perfil',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PerfilPage()
+                    ),
+                );
+              },
             ),
-            _buildMenuButton(
-              icon: null,
-              label: '',
-              onTap: () {},
-            ),
-            _buildMenuButton(
-              icon: null,
-              label: '',
-              onTap: () {},
-            ),
+            // _buildMenuButton(
+            //   icon: null,
+            //   label: '',
+            //   onTap: () {},
+            // ),
+            // _buildMenuButton(
+            //   icon: null,
+            //   label: '',
+            //   onTap: () {},
+            // ),
           ],
         );
       },

@@ -4,11 +4,13 @@ import 'package:tcc/controllers/exercicio_controller.dart';
 import 'package:tcc/controllers/feedback_controller.dart';
 import 'package:tcc/controllers/metodo_controller.dart';
 import 'package:tcc/controllers/treino_controller.dart';
+import 'package:tcc/controllers/usuario_controller.dart';
 import 'package:tcc/models/exercicio.dart';
 import 'package:tcc/models/feedback.dart';
 import 'package:tcc/models/metodo.dart';
 import 'package:tcc/models/treino.dart';
 import 'package:tcc/screens/barra_cima_scaffold.dart';
+import 'package:tcc/screens/video_exercicio_widget.dart';
 // import 'package:uuid/uuid.dart';
 
 class RealizaTreinoPage extends StatefulWidget {
@@ -162,6 +164,19 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
       }
     );
 
+    final aluno = await DaoUser.getUsuarioById(widget.alunoId);
+    if(aluno!.assistenteId != null){
+      await DaoChat.enviarFeedbackComoMensagem(
+        chatId: "${widget.alunoId}_${aluno.assistenteId!}",
+        feedback: feedback,
+        treinoNome: widget.treino.nome,
+        exerciciosNomes: {
+          for (var item in widget.treino.itens) 
+          item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
+        }
+      );
+    } 
+
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -277,17 +292,18 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                                       const SizedBox(height: 16),
                                       Text("Vídeo Demonstrativo", style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
                                       const SizedBox(height: 8),
-                                      // Placeholder para o player de vídeo.
-                                      // Você pode substituir este Container por um widget de vídeo.
-                                      Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: textColor.withOpacity(0.2)),
+                                      if(exercicio.video != null && exercicio.video!.isNotEmpty)
+                                        VideoExercicioWidget(url: exercicio.video!, textColor: textColor)
+                                      else 
+                                        Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(8),
+                                            border: Border.all(color: textColor.withOpacity(0.2)),
+                                          ),
+                                          child: Center(child: Icon(Icons.play_circle_outline, size: 60, color: textColor.withOpacity(0.7))),
                                         ),
-                                        child: Center(child: Icon(Icons.play_circle_outline, size: 60, color: textColor.withOpacity(0.7))),
-                                      ),
                                       const SizedBox(height: 16),
 
                                       // Campo de carga
@@ -313,18 +329,18 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                                       const SizedBox(height: 12),
 
                                       // Upload de vídeo (placeholder)
-                                      OutlinedButton.icon(
-                                        onPressed: () {
-                                          // aqui você pode abrir o picker de vídeo
-                                          setState(() {
-                                            _videoPaths[item.exercicioId] = "video_demo.mp4";
-                                          });
-                                        },
-                                        icon: const Icon(Icons.video_call),
-                                        label: Text(_videoPaths[item.exercicioId] == null
-                                            ? "Selecionar vídeo"
-                                            : "Vídeo selecionado"),
-                                      ),
+                                      // OutlinedButton.icon(
+                                      //   onPressed: () {
+                                      //     // aqui você pode abrir o picker de vídeo
+                                      //     setState(() {
+                                      //       _videoPaths[item.exercicioId] = "video_demo.mp4";
+                                      //     });
+                                      //   },
+                                      //   icon: const Icon(Icons.video_call),
+                                      //   label: Text(_videoPaths[item.exercicioId] == null
+                                      //       ? "Selecionar vídeo"
+                                      //       : "Vídeo selecionado"),
+                                      // ),
                                       const SizedBox(height: 16),
                                     ],
                                   ),

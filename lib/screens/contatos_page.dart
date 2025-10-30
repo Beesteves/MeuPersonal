@@ -20,7 +20,8 @@ class ContatosPage extends StatelessWidget {
     } else {
       stream = DaoUser.streamUsuarioById(userId).asyncMap((aluno) async {
         final personal = await DaoUser.getUsuarioById(aluno!.personalId!); 
-        return [personal!];
+        final assistente = await DaoUser.getUsuarioById(aluno.assistenteId!);
+        return [personal!, assistente!];
       });
     }
 
@@ -37,9 +38,9 @@ class ContatosPage extends StatelessWidget {
             itemBuilder: (context, i) {
               final contato = contatos[i];
               return ListTile(
-                leading: const CircleAvatar(child: Icon(Icons.person)),
+                // leading: const CircleAvatar(child: Icon(Icons.person)),
                 title: Text(contato.nome),
-                subtitle: Text(contato.email),
+                subtitle: Text(contato.tipo),
                 onTap: () {
                   Navigator.push(
                     context,

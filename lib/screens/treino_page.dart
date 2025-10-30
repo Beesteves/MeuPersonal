@@ -7,11 +7,15 @@ import 'package:tcc/screens/detalhes_treino_page.dart';
 
 class ListaTreinosPage extends StatelessWidget {
   final String personalId;
+  final String userTipo;
 
   const ListaTreinosPage({
     super.key,
     required this.personalId,
+    required this.userTipo,
   });
+
+  bool get podeEditar => userTipo == 'personal';
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +35,7 @@ class ListaTreinosPage extends StatelessWidget {
                 }
                 final treinos = snapshot.data ?? [];
                 if (treinos.isEmpty) {
-                  return const Center(
-                      child: Text('Nenhum treino cadastrado.'));
+                  return const Center(child: Text('Nenhum treino cadastrado.'));
                 }
 
                 return ListView.builder(
@@ -61,58 +64,61 @@ class ListaTreinosPage extends StatelessWidget {
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text('Duração: ${treino.duracao} semanas | Exercícios: ${treino.itens.length}'),
-                        trailing: PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert),
-                          onSelected: (value) {
-                            if (value == 'editar') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => CriaTreinoPage(
-                                    personalId: personalId,
-                                    treino: treino,
-                                  ),
-                                ),
-                              );
-                            } else if (value == 'deletar') {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext ctx) {
-                                  return AlertDialog(
-                                    title: const Text('Confirmar Exclusão'),
-                                    content: Text(
-                                        'Tem certeza que deseja deletar o treino "${treino.nome}"?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Cancelar'),
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
+                        subtitle: Text(
+                            'Duração: ${treino.duracao} semanas | Exercícios: ${treino.itens.length}'),
+                        trailing: podeEditar
+                            ? PopupMenuButton<String>(
+                                icon: const Icon(Icons.more_vert),
+                                onSelected: (value) {
+                                  if (value == 'editar') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => CriaTreinoPage(
+                                          personalId: personalId,
+                                          treino: treino,
+                                        ),
                                       ),
-                                      TextButton(
-                                        child: const Text('Deletar',
-                                            style:
-                                                TextStyle(color: Colors.red)),
-                                        onPressed: () {
-                                          DaoTreino.deletar(treino.id);
-                                          Navigator.of(ctx).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
+                                    );
+                                  } else if (value == 'deletar') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext ctx) {
+                                        return AlertDialog(
+                                          title: const Text('Confirmar Exclusão'),
+                                          content: Text(
+                                              'Tem certeza que deseja deletar o treino "${treino.nome}"?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Cancelar'),
+                                              onPressed: () {
+                                                Navigator.of(ctx).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text('Deletar',
+                                                  style: TextStyle(
+                                                      color: Colors.red)),
+                                              onPressed: () {
+                                                DaoTreino.deletar(treino.id);
+                                                Navigator.of(ctx).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
-                              );
-                            }
-                          },
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                                value: 'editar', child: Text('Editar')),
-                            const PopupMenuItem<String>(
-                                value: 'deletar', child: Text('Deletar')),
-                          ],
-                        ),
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry<String>>[
+                                  const PopupMenuItem<String>(
+                                      value: 'editar', child: Text('Editar')),
+                                  const PopupMenuItem<String>(
+                                      value: 'deletar', child: Text('Deletar')),
+                                ],
+                              )
+                            : null,
                       ),
                     );
                   },
@@ -120,38 +126,40 @@ class ListaTreinosPage extends StatelessWidget {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CriaTreinoPage(
-                      personalId: personalId,
+
+          // Botão de adicionar só aparece se for personal
+          if (podeEditar)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CriaTreinoPage(
+                        personalId: personalId,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: const Text(
-                "+ Adicionar Treino",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                  );
+                },
+                child: const Text(
+                  "+ Adicionar Treino",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
-

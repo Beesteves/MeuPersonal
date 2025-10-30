@@ -108,12 +108,27 @@ class _CriaTreinoPageState extends State<CriaTreinoPage> {
       builder: (context) {
         String? exercicioIdSelecionado;
         String? metodoIdSelecionado;
+        String? tipoFiltro;
         final seriesController = TextEditingController();
         final repeticoesController = TextEditingController();
         final formKeyDialog = GlobalKey<FormState>();
 
+        final tipos = _exerciciosDisponiveis
+          .map((e) => e.tipo?.trim() ?? '')
+          .where((t) => t.isNotEmpty)
+          .toSet()
+          .toList()
+          ..sort();
+
+
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            final exerciciosFiltrados = tipoFiltro == null
+              ? _exerciciosDisponiveis
+              : _exerciciosDisponiveis
+                .where((e) => (e.tipo ?? '').toLowerCase() == tipoFiltro!.toLowerCase())
+                .toList();
+
             return AlertDialog(
               title: const Text("Adicionar Exercício ao Treino"),
               content: Form(
@@ -122,13 +137,34 @@ class _CriaTreinoPageState extends State<CriaTreinoPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (_exerciciosDisponiveis.isEmpty)
-                        const Text("Nenhum exercício disponível. Crie um exercício primeiro.")
+                      if(tipos.isNotEmpty)
+                        DropdownButtonFormField<String>(
+                          value: tipoFiltro,
+                          hint: const Text("Filtrar por tipo (opcional)"),
+                          items: [null, ...tipos]
+                            .map((tipo) {
+                              return DropdownMenuItem<String>(
+                                value: tipo,
+                                child: Text(tipo ?? "Todos"),
+                              );
+                              })
+                            .toList(),
+                          onChanged: (value) {
+                            setDialogState(() {
+                              tipoFiltro = value;
+                              exercicioIdSelecionado = null;
+                            });
+                          },
+                        ),
+                      const SizedBox(height: 8),
+
+                      if (exerciciosFiltrados.isEmpty)
+                        const Text("Nenhum exercício disponível para este tipo.")
                       else
                         DropdownButtonFormField<String>(
                           value: exercicioIdSelecionado,
                           hint: const Text("Selecione um Exercício"),
-                          items: _exerciciosDisponiveis.map((exercicio) {
+                          items: exerciciosFiltrados.map((exercicio) {
                             return DropdownMenuItem(
                               value: exercicio.id,
                               child: Text(exercicio.nome),

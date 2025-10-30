@@ -5,6 +5,7 @@ import 'package:tcc/models/exercicio.dart';
 import 'package:tcc/models/metodo.dart';
 import 'package:tcc/models/treino.dart';
 import 'package:tcc/screens/barra_cima_scaffold.dart';
+import 'package:tcc/screens/video_exercicio_widget.dart';
 
 class DetalhesTreinoPage extends StatefulWidget {
   final Treino treino;
@@ -156,21 +157,18 @@ class _DetalhesTreinoPageState extends State<DetalhesTreinoPage> {
                                         exercicio.descricao.isNotEmpty ? exercicio.descricao : "Nenhuma descrição disponível.",
                                         style: TextStyle(color: textColor),
                                       ),
-                                      const SizedBox(height: 16),
-                                      Text("Vídeo Demonstrativo", style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                                      const SizedBox(height: 8),
-                                      // Placeholder para o player de vídeo.
-                                      // Você pode substituir este Container por um widget de vídeo.
-                                      Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: textColor.withOpacity(0.2)),
+                                      if(exercicio.video != null && exercicio.video!.isNotEmpty) ...[
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          "Vídeo Demonstrativo",
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
                                         ),
-                                        child: Center(child: Icon(Icons.play_circle_outline, size: 60, color: textColor.withOpacity(0.7))),
-                                      ),
-                                      const SizedBox(height: 8),
+                                        const SizedBox(height: 8),
+                                        VideoExercicioWidget(
+                                          url: exercicio.video!,
+                                          textColor: textColor,
+                                        ),                                      
+                                      ],                                        
                                     ],
                                   ),
                                 ),

@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushNamed(context, '/cadastroPersonal');
                       },
                       child: const Text(
-                        'Sou Personal',
+                        'Cadastro de Personal',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tcc/models/usuario.dart';
 import 'package:tcc/screens/aluno_page.dart';
 import 'package:tcc/screens/base_scaffold.dart';
 import 'package:tcc/screens/contatos_page.dart';
@@ -19,8 +20,9 @@ class _AppState extends State<App> {
   int _currentIndex = 0;
   String? _tipoUsuario;
   String? _userId;
+  Usuario? _usuario;
   bool _isLoading = true;
-
+  
   @override
   void initState() {
     super.initState();
@@ -41,6 +43,7 @@ class _AppState extends State<App> {
           _tipoUsuario = doc['tipo'];
           _userId = uid;      // Guarda o UID no estado
           _isLoading = false;
+          _usuario = Usuario.fromMap(doc.data()!);
         });
       } else {
         setState(() {
@@ -72,10 +75,17 @@ class _AppState extends State<App> {
     final List<Widget> pages;
     final List<String> titles;
 
-    if (_tipoUsuario == "personal" || _tipoUsuario == "assistente") {
+    if (_tipoUsuario == "personal") {
       pages = [
         ListaAlunosScreen(personalIds: _userId ?? ""),
-        MenuPagePersonal(personalIds: _userId ?? ""),
+        MenuPagePersonal(personalIds: _userId ?? "", userTipo: "personal"),
+        ContatosPage(userId: _userId ?? "", tipo: _tipoUsuario!),
+      ];
+      titles = ["ALUNOS", "MENU", "CHAT"];
+    } else if (_tipoUsuario == "assistente") {
+      pages = [
+        ListaAlunosScreen(assistenteIds: _userId ?? ""),
+        MenuPagePersonal(personalIds: _usuario?.personalId  ?? "", userTipo: "assistente"),
         ContatosPage(userId: _userId ?? "", tipo: _tipoUsuario!),
       ];
       titles = ["ALUNOS", "MENU", "CHAT"];

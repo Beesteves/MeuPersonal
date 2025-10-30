@@ -42,10 +42,9 @@ class DaoChat {
     required String chatId,
     required FeedbackModel feedback,
     required String treinoNome,
-    required Map<String, String> exerciciosNomes, // idExercicio -> nome
+    required Map<String, String> exerciciosNomes, 
   }) async {
     try {
-      // Monta o texto do resumo do feedback
       final buffer = StringBuffer();
       buffer.writeln("📅 Treino: $treinoNome");
       buffer.writeln("🕒 ${feedback.data.day}/${feedback.data.month}/${feedback.data.year} - "
@@ -58,9 +57,9 @@ class DaoChat {
         buffer.writeln("- $nomeEx: ${carga}kg ${texto.isNotEmpty ? "→ $texto" : ""}");
       });
 
-      if (feedback.videoFB != null && feedback.videoFB!.isNotEmpty) {
-        buffer.writeln("\n🎥 Vídeo: ${feedback.videoFB}");
-      }
+      // if (feedback.videoFB != null && feedback.videoFB!.isNotEmpty) {
+      //   buffer.writeln("\n🎥 Vídeo: ${feedback.videoFB}");
+      // }
 
       final mensagem = buffer.toString();
 

@@ -3,50 +3,119 @@ import 'package:tcc/controllers/exercicio_controller.dart';
 import 'package:tcc/models/exercicio.dart';
 import 'package:tcc/screens/barra_cima_scaffold.dart';
 import 'package:tcc/screens/cria_exercicio_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:tcc/screens/video_exercicio_widget.dart';
 
-class ListaExerciciosPage extends StatelessWidget {
+class ListaExerciciosPage extends StatefulWidget {
   final String personalId;
-
+  final String userTipo;
 
   const ListaExerciciosPage({
     super.key,
     required this.personalId,
-
+    required this.userTipo,
   });
+
+  bool get podeEditar => userTipo == 'personal';
+
+  @override
+  State<ListaExerciciosPage> createState() => _ListaExerciciosPageState();
+}
+
+class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
+  String? filtroTipo;
+  String busca = '';
 
   @override
   Widget build(BuildContext context) {
     return BarraCimaScaffold(
       title: "Exercícios",
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<Exercicio>>(
-              stream: DaoExercicio.getExerciciodoPersonal(personalId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Erro: ${snapshot.error}'));
-                }
-                final exercicios = snapshot.data ?? [];
-                if (exercicios.isEmpty) {
-                  return const Center(
-                      child: Text('Nenhum exercício cadastrado.'));
-                }
+      body: StreamBuilder<List<Exercicio>>(
+        stream: DaoExercicio.getExerciciodoPersonal(widget.personalId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          }
 
-                return ListView.builder(
-                  itemCount: exercicios.length,
+          final todosExercicios = snapshot.data ?? [];
+          if (todosExercicios.isEmpty) {
+            return const Center(child: Text('Nenhum exercício cadastrado.'));
+          }
+
+          // 🔹 Lista de tipos únicos para o filtro
+          final tipos = todosExercicios
+              .map((e) => e.tipo?.trim() ?? '')
+              .where((t) => t.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
+
+          // 🔹 Aplica filtro por tipo e busca por nome
+          final exerciciosFiltrados = todosExercicios.where((e) {
+            final correspondeTipo = filtroTipo == null
+                ? true
+                : (e.tipo ?? '').toLowerCase() == filtroTipo!.toLowerCase();
+            final correspondeBusca = e.nome.toLowerCase().contains(busca.toLowerCase());
+            return correspondeTipo && correspondeBusca;
+          }).toList();
+
+          return Column(
+            children: [
+              // 🔹 Barra de busca e filtro
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    // Campo de busca
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: "Buscar exercício",
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            busca = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Dropdown de filtro por tipo
+                    DropdownButton<String>(
+                      value: filtroTipo ?? "Todos",
+                      items: ["Todos", ...tipos]
+                          .map((tipo) => DropdownMenuItem(
+                                value: tipo,
+                                child: Text(tipo),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          filtroTipo = value == "Todos" ? null : value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              // Lista de exercícios
+              Expanded(
+                child: ListView.builder(
+                  itemCount: exerciciosFiltrados.length,
                   itemBuilder: (context, i) {
-                    final exercicio = exercicios[i];
+                    final exercicio = exerciciosFiltrados[i];
                     return Card(
+                      elevation: 2,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
-                      child: ListTile(
+                      child: ExpansionTile(
                         title: Text(
                           exercicio.nome,
                           style: const TextStyle(
@@ -55,24 +124,28 @@ class ListaExerciciosPage extends StatelessWidget {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(exercicio.descricao, maxLines: 2, overflow: TextOverflow.ellipsis),
+                            // Text(
+                            //   exercicio.descricao,
+                            //   maxLines: 2,
+                            //   overflow: TextOverflow.ellipsis,
+                            // ),
                             const SizedBox(height: 5),
                             Text(
-                              'Tipo: ${exercicio.tipo}',
+                              'Tipo: ${exercicio.tipo ?? "Não informado"}',
                               style: TextStyle(color: Colors.grey.shade700),
                             ),
                           ],
                         ),
-                        trailing: PopupMenuButton<String>(
+                        trailing: widget.podeEditar?
+                         PopupMenuButton<String>(
                           icon: const Icon(Icons.more_vert),
                           onSelected: (value) {
                             if (value == 'editar') {
-                              print('Editar ${exercicio.id}');
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => CriaExercicioPage(
-                                    personalId: personalId,
+                                    personalId: widget.personalId,
                                     exercicio: exercicio,
                                   ),
                                 ),
@@ -97,7 +170,7 @@ class ListaExerciciosPage extends StatelessWidget {
                                             style:
                                                 TextStyle(color: Colors.red)),
                                         onPressed: () {
-                                          DaoExercicio.deletar(personalId, exercicio.id);
+                                          DaoExercicio.deletar(widget.personalId, exercicio.id);
                                           Navigator.of(ctx).pop();
                                         },
                                       ),
@@ -108,71 +181,71 @@ class ListaExerciciosPage extends StatelessWidget {
                             }
                           },
                           itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
+                              const <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
                                 value: 'editar', child: Text('Editar')),
-                            const PopupMenuItem<String>(
+                            PopupMenuItem<String>(
                                 value: 'deletar', child: Text('Deletar')),
                           ],
-                        ),
-                        onTap: () {
-                          // Se o vídeo existir, abre ao tocar no card
-                          if (exercicio.video != null &&
-                              exercicio.video!.isNotEmpty) {
-                            final uri = Uri.tryParse(exercicio.video!);
-                            if (uri != null) {
-                              canLaunchUrl(uri).then((can) async {
-                                if (can) {
-                                  await launchUrl(uri);
-                                } else {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Não foi possível abrir o vídeo.')),
-                                  );
-                                }
-                              });
-                            }
-                          }
-                        },
+                        ): null,
+                        children: [
+                          const Divider(),
+                          const SizedBox(height: 8,),
+                          const Text("Descrição do Exercício"),
+                          const SizedBox(height: 4),
+                          Text(
+                          exercicio.descricao.isNotEmpty ? exercicio.descricao : "Nenhuma descrição disponível."),
+                          if(exercicio.video != null && exercicio.video!.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            const Text("Vídeo Demonstrativo"),
+                            const SizedBox(height: 8),
+                            VideoExercicioWidget(
+                              url: exercicio.video!,
+                              textColor: Colors.white,
+                            ),                                      
+                          ],           
+
+                        ],
                       ),
                     );
                   },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CriaExercicioPage(
-                      personalId: personalId,
-                    ),
+
+              // Botão para adicionar exercício
+              if (widget.podeEditar)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
-                );
-              },
-              child: const Text(
-                "+ Adicionar Exercício",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CriaExercicioPage(
+                          personalId: widget.personalId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "+ Adicionar Exercício",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tcc/models/item_treino.dart';
 
 class Treino {
@@ -7,6 +8,9 @@ class Treino {
   final String personalId;
   final List<ItemTreino> itens;
   final int feitos;
+  DateTime? data;
+  final String status;
+
 
 
   Treino({
@@ -16,6 +20,8 @@ class Treino {
     required this.duracao,
     required this.itens,
     this.feitos = 0,
+    this.data,
+    this.status = "Ativo",
   });
 
   factory Treino.fromMap(Map<String, dynamic> map, String id) {
@@ -35,8 +41,10 @@ class Treino {
       nome: map['nome'] ?? '',
       duracao: map['duracao'] ?? 0,
       feitos: map['feitos'] ?? 0,
+      status: map['status'] ?? 'Ativo',
       personalId: map['personalId'] ?? '',
       itens: itensConvertidos,
+      data: map['data'] != null ? (map['data'] as Timestamp).toDate() : null,
     );
   }
 
@@ -47,6 +55,8 @@ class Treino {
     'personalId': personalId,
     'feitos': feitos,
     'itens': itens.map((item) => item.toMap()).toList(),
+    'data': data,
+    'status': status,
     };
   }
 }

@@ -8,6 +8,14 @@ class ListaTreinosAlunoScreen extends StatelessWidget {
 
   const ListaTreinosAlunoScreen({super.key, required this.alunoId});
 
+  String getStatusTreino(DateTime dataInicio, int duracaoSemanas) {
+    final dataFim = dataInicio.add(Duration(days: duracaoSemanas * 7));
+    final agora = DateTime.now();
+    return (dataFim.isAfter(agora) || dataFim.isAtSameMomentAs(agora))
+        ? "Ativo"
+        : "Bloqueado";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +61,8 @@ class ListaTreinosAlunoScreen extends StatelessWidget {
                         trailing:
                             const Icon(Icons.chevron_right, size: 28),
                         onTap: () {
-                          if(t.feitos < t.duracao){
+                          final status = getStatusTreino(t.data ?? DateTime.now(), t.duracao);
+                          if(t.feitos < t.duracao && status == "Ativo"){
                             Navigator.push( // Navega para a lista de alunos do assistente
                               context,
                               MaterialPageRoute(

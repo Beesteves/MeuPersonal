@@ -12,10 +12,9 @@ class DaoFeed {
   try {
     final alunoRef = db.collection("users").doc(feed.alunoId);
 
-    // Usa o id do feedback como nome do documento
     await alunoRef
-        .collection("feedback") // melhor nome no plural
-        .doc(feed.id) // gera sempre documento único
+        .collection("feedback") 
+        .doc(feed.id) 
         .set(feed.toMap());
 
     print("✅ Feedback salvo com sucesso, id: ${feed.id}");
