@@ -108,18 +108,14 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                 child: ListView.builder(
                   itemCount: exerciciosFiltrados.length,
                   itemBuilder: (context, i) {
-                    final exercicio = exerciciosFiltrados[i];
+                    final exercicio = exerciciosFiltrados[i];                    
                     return Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       child: ExpansionTile(
                         title: Text(
                           exercicio.nome,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +128,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                             const SizedBox(height: 5),
                             Text(
                               'Tipo: ${exercicio.tipo ?? "Não informado"}',
-                              style: TextStyle(color: Colors.grey.shade700),
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -168,7 +164,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                                       TextButton(
                                         child: const Text('Deletar',
                                             style:
-                                                TextStyle(color: Colors.red)),
+                                                TextStyle(color: Colors.red)), // Manter cor para ação destrutiva
                                         onPressed: () {
                                           DaoExercicio.deletar(widget.personalId, exercicio.id);
                                           Navigator.of(ctx).pop();
@@ -201,7 +197,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                             const SizedBox(height: 8),
                             VideoExercicioWidget(
                               url: exercicio.video!,
-                              textColor: Colors.white,
+                              textColor: Theme.of(context).colorScheme.onSurface, // Usar cor do tema
                             ),                                      
                           ],           
 
@@ -217,13 +213,6 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[300],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -236,10 +225,6 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                   },
                   child: const Text(
                     "+ Adicionar Exercício",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87),
                   ),
                 ),
               ),

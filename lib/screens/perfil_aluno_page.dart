@@ -107,8 +107,8 @@ class _InformacoesAluno extends StatelessWidget {
           FutureBuilder<Usuario>(
               future: DaoUser.streamUsuarioById(aluno.assistenteId!).first.then((value) => value!),
               builder: (context, snapshot) {
-                return Text("Assistente: ${snapshot.data?.nome ?? 'Carregando...'}    Inicio Acompanhamento: ${aluno.criadoEm.day.toString().padLeft(2, '0')}/${aluno.criadoEm.month.toString().padLeft(2, '0')}/${aluno.criadoEm.year}",
-                    style: const TextStyle(fontSize: 16));
+                return Text("Assistente: ${snapshot.data?.nome ?? 'Carregando...'}    Início Acompanhamento: ${aluno.criadoEm.day.toString().padLeft(2, '0')}/${aluno.criadoEm.month.toString().padLeft(2, '0')}/${aluno.criadoEm.year}",
+                    style: Theme.of(context).textTheme.bodyLarge);
               }),
       ],
     );
@@ -132,10 +132,7 @@ class _BotoesAcao extends StatelessWidget {
             onPressed: () {
               _showOpcoesAdicionarTreino(context, aluno, aluno.personalId!);
             },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              textStyle: const TextStyle(fontSize: 16),
-            ),
+            // Estilo herdado do ElevatedButtonTheme
           ),
         ),
         const SizedBox(height: 10),
@@ -149,10 +146,7 @@ class _BotoesAcao extends StatelessWidget {
                 // Abre um diálogo para selecionar um assistente existente
                 _showDialogoSelecaoAssistente(context, aluno);
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
+              // Estilo herdado do ElevatedButtonTheme
             ),
           ),
       ],
@@ -194,7 +188,7 @@ class _ListaDeTreinos extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 child: ListTile(
                   title: Text(treino.nome,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                      style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text(
                     "Duração: ${treino.duracao} semanas   Realizados: ${treino.feitos}\n"
                     "Status: ${treino.status}"),
@@ -439,6 +433,7 @@ void _showDialogoSelecaoModelo(
                   final modelo = modelos[index];
                   return ListTile(
                     title: Text(modelo.nome),
+                    // ignore: unnecessary_null_comparison
                     subtitle: modelo.duracao != null
                         ? Text('Duração: ${modelo.duracao} semanas')
                         : null,
@@ -474,4 +469,3 @@ void _showDialogoSelecaoModelo(
     },
   );
 }
-

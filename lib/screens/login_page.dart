@@ -55,29 +55,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
-      body: Column(
-        children: [
-          // 🔹 Barra de cima no mesmo padrão
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: Colors.grey,
-            child: const Center(
-              child: Text(
-                "LOGIN",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
+      // A barra superior agora é um AppBar, que usará o appBarTheme.
+      appBar: AppBar(
+        title: const Text("LOGIN"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: _formKey,
@@ -88,15 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                     // 🔹 Campo de email
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
+                      // A decoração é herdada do inputDecorationTheme.
+                      decoration: const InputDecoration(labelText: "Email"),
                       validator: (v) =>
                           v == null || v.isEmpty ? "Informe o email" : null,
                     ),
@@ -106,15 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Senha",
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
+                      // A decoração é herdada do inputDecorationTheme.
+                      decoration: const InputDecoration(labelText: "Senha"),
                       validator: (v) =>
                           v == null || v.isEmpty ? "Informe a senha" : null,
                     ),
@@ -126,18 +95,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: const Text(
-                          "Entrar",
-                          style: TextStyle(fontSize: 18),
-                        ),
+                        // O estilo é herdado do elevatedButtonTheme.
+                        child: const Text("Entrar"),
                       ),
                     ),
 
@@ -148,21 +107,13 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.pushNamed(context, '/cadastroPersonal');
                       },
-                      child: const Text(
-                        'Cadastro de Personal',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
+                      // O estilo é herdado do textButtonTheme.
+                      child: const Text('Cadastro de Personal'),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

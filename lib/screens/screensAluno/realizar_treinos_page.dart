@@ -11,13 +11,11 @@ import 'package:tcc/models/metodo.dart';
 import 'package:tcc/models/treino.dart';
 import 'package:tcc/screens/barra_cima_scaffold.dart';
 import 'package:tcc/screens/video_exercicio_widget.dart';
-// import 'package:uuid/uuid.dart';
 
 class RealizaTreinoPage extends StatefulWidget {
   final Treino treino;
   final String alunoId;
   final String personalId;
-
 
   const RealizaTreinoPage({
     super.key,
@@ -35,10 +33,9 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
   List<Metodo> _metodosDisponiveis = [];
   bool _isLoading = true;
 
-  // Map para guardar os dados inseridos pelo aluno (carga, mensagem, vídeo)
   final Map<String, TextEditingController> _cargaControllers = {};
   final Map<String, TextEditingController> _mensagemControllers = {};
-  final Map<String, String?> _videoPaths = {}; // futuramente pode guardar link ou path
+  final Map<String, String?> _videoPaths = {};
 
   @override
   void initState() {
@@ -52,6 +49,7 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
         DaoExercicio.getExerciciodoPersonal(widget.personalId).first,
         DaoMetodo.getMetodosDoPersonal(widget.personalId).first,
       ]);
+
       if (mounted) {
         setState(() {
           _exerciciosDisponiveis = results[0] as List<Exercicio>;
@@ -59,7 +57,6 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
           _isLoading = false;
         });
 
-        // Inicializa os controladores para cada exercício
         for (var item in widget.treino.itens) {
           _cargaControllers[item.exercicioId] = TextEditingController();
           _mensagemControllers[item.exercicioId] = TextEditingController();
@@ -68,11 +65,9 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao carregar dados do treino: $e')),
+          SnackBar(content: Text('Erro ao carregar treino: $e')),
         );
       }
     }
@@ -109,93 +104,83 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
       final hexCode = colorString.replaceAll('#', '');
       final fullHexCode = hexCode.length == 6 ? 'ff$hexCode' : hexCode;
       return Color(int.parse('0x$fullHexCode'));
-    } catch (e) {
+    } catch (_) {
       return Colors.white;
     }
   }
 
-  void _enviarDados() async {
-  try {
-    final Map<String, int> cargas = {};
-    for (var item in widget.treino.itens) {
-      final cargaTxt = _cargaControllers[item.exercicioId]?.text ?? '';
-      final carga = int.tryParse(cargaTxt);
-      if (carga != null) {
-        cargas[item.exercicioId] = carga;
+  Future<void> _enviarDados() async {
+    try {
+      final Map<String, int> cargas = {};
+      final Map<String, String> mensagens = {};
+
+      for (var item in widget.treino.itens) {
+        final carga = int.tryParse(_cargaControllers[item.exercicioId]?.text ?? '');
+        if (carga != null) cargas[item.exercicioId] = carga;
+
+        final msg = _mensagemControllers[item.exercicioId]?.text ?? '';
+        if (msg.isNotEmpty) mensagens[item.exercicioId] = msg;
       }
-    }
 
-    final Map<String, String> mensagens = {};
-    for (var item in widget.treino.itens) {
-      final mensagemTxt = _mensagemControllers[item.exercicioId]?.text ?? '';
-      if (mensagemTxt.isNotEmpty) {
-        mensagens[item.exercicioId] = mensagemTxt;
-      }
-    }
+      final primeiroVideo = _videoPaths.values.firstWhere(
+        (v) => v != null,
+        orElse: () => null,
+      );
 
-    final primeiroVideo = _videoPaths.values.firstWhere(
-      (v) => v != null,
-      orElse: () => null,
-    );
+      final feedback = FeedbackModel(
+        alunoId: widget.alunoId,
+        treinoId: widget.treino.id,
+        data: DateTime.now(),
+        textoFB: mensagens.isNotEmpty ? mensagens : null,
+        videoFB: primeiroVideo,
+        cargas: cargas.isNotEmpty ? cargas : null,
+      );
 
-    final feedback = FeedbackModel(
-      alunoId: widget.alunoId,
-      treinoId: widget.treino.id,
-      data: DateTime.now(),
-      textoFB: mensagens.isNotEmpty ? mensagens : null,
-      videoFB: primeiroVideo,
-      cargas: cargas.isNotEmpty ? cargas : null,
-    );
+      await DaoTreino.adicionaTreinoFeito(widget.treino, widget.alunoId);
+      await DaoFeed.salvar(feedback);
 
-    // incrementa contador de treinos feitos
-    await DaoTreino.adicionaTreinoFeito(widget.treino, widget.alunoId);
-
-    // salva um NOVO feedback
-    await DaoFeed.salvar(feedback);
-
-    //Envia feedback para mensagens
-    await DaoChat.enviarFeedbackComoMensagem(
-      chatId: "${widget.alunoId}_${widget.personalId}",
-      feedback: feedback,
-      treinoNome: widget.treino.nome,
-      exerciciosNomes: {
-        for (var item in widget.treino.itens) 
-        item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
-      }
-    );
-
-    final aluno = await DaoUser.getUsuarioById(widget.alunoId);
-    if(aluno!.assistenteId != null){
       await DaoChat.enviarFeedbackComoMensagem(
-        chatId: "${widget.alunoId}_${aluno.assistenteId!}",
+        chatId: "${widget.alunoId}_${widget.personalId}",
         feedback: feedback,
         treinoNome: widget.treino.nome,
         exerciciosNomes: {
-          for (var item in widget.treino.itens) 
-          item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
-        }
+          for (var item in widget.treino.itens)
+            item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
+        },
       );
-    } 
 
+      final aluno = await DaoUser.getUsuarioById(widget.alunoId);
+      if (aluno?.assistenteId != null) {
+        await DaoChat.enviarFeedbackComoMensagem(
+          chatId: "${widget.alunoId}_${aluno!.assistenteId!}",
+          feedback: feedback,
+          treinoNome: widget.treino.nome,
+          exerciciosNomes: {
+            for (var item in widget.treino.itens)
+              item.exercicioId: _getExercicioPorId(item.exercicioId).nome,
+          },
+        );
+      }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Feedback enviado com sucesso!")),
-      );
-      Navigator.pop(context);
-    }
-  } catch (e) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao enviar feedback: $e")),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Feedback enviado com sucesso!")),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erro ao enviar feedback: $e")),
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BarraCimaScaffold(
       title: widget.treino.nome,
       body: _isLoading
@@ -206,16 +191,13 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Duração: ${widget.treino.duracao} semanas ||  Feitos: ${widget.treino.feitos}/${widget.treino.duracao}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(color: Colors.black54),
+                    'Duração: ${widget.treino.duracao} semanas  |  Feitos: ${widget.treino.feitos}/${widget.treino.duracao}',
+                    style: theme.textTheme.titleMedium?.copyWith(color: Colors.black54),
                   ),
                   const SizedBox(height: 24),
-                  Text("Exercícios do Treino",
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Text("Exercícios do Treino", style: theme.textTheme.titleLarge),
                   const Divider(height: 16),
+
                   if (widget.treino.itens.isEmpty)
                     const Center(
                       child: Padding(
@@ -224,12 +206,10 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                       ),
                     )
                   else
-                    ListView.separated(
+                    ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: widget.treino.itens.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 0),
                       itemBuilder: (context, index) {
                         final item = widget.treino.itens[index];
                         final exercicio = _getExercicioPorId(item.exercicioId);
@@ -238,131 +218,92 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                         final textColor = cardColor.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
 
                         return Card(
-                          color: cardColor,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(10)),
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          clipBehavior: Clip.antiAlias,
-                          child: ExpansionTile(
-                            iconColor: textColor,
-                            collapsedIconColor: textColor,
-                            title: Text(exercicio.nome,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: textColor)),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          elevation: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Theme(
+                              data: theme.copyWith(dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                collapsedBackgroundColor: Colors.transparent,
+                                backgroundColor: Colors.transparent,
+                                iconColor: textColor,
+                                collapsedIconColor: textColor,
+                                title: Text(
+                                  exercicio.nome,
+                                  style: theme.textTheme.titleLarge?.copyWith(color: textColor),
+                                ),
+                                subtitle: Text(
+                                  "Séries: ${item.numSerie} | Reps: ${item.numRepeticao}\nMétodo: ${metodo.nome}",
+                                  style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                                ),
                                 children: [
-                                  Text("Séries: ${item.numSerie} | Reps: ${item.numRepeticao}",
-                                      style: TextStyle(color: textColor)),
-                                  const SizedBox(height: 4),
-                                  Text("Método: ${metodo.nome}",
-                                      style: TextStyle(color: textColor)),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Descrição do Exercício",
+                                            style: theme.textTheme.titleMedium?.copyWith(
+                                                fontWeight: FontWeight.bold, color: textColor)),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          exercicio.descricao.isNotEmpty
+                                              ? exercicio.descricao
+                                              : "Nenhuma descrição disponível.",
+                                          style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                                        ),
+
+                                        if (exercicio.video != null && exercicio.video!.isNotEmpty) ...[
+                                          const SizedBox(height: 16),
+                                          Text("Vídeo Demonstrativo",
+                                              style: theme.textTheme.titleMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold, color: textColor)),
+                                          const SizedBox(height: 8),
+                                          VideoExercicioWidget(url: exercicio.video!, textColor: textColor),
+                                        ],
+
+                                        const SizedBox(height: 16),
+                                        TextField(
+                                          controller: _cargaControllers[item.exercicioId],
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                            labelText: "Carga realizada (kg)",
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        TextField(
+                                          controller: _mensagemControllers[item.exercicioId],
+                                          decoration: const InputDecoration(labelText: "Mensagem"),
+                                          maxLines: 2,
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                    dividerColor: textColor.withOpacity(0.2)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 8.0)
-                                      .copyWith(top: 0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Divider(),
-                                      const SizedBox(height: 8),
-                                      Text("Descrição do Exercício",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: textColor)),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        exercicio.descricao.isNotEmpty
-                                            ? exercicio.descricao
-                                            : "Nenhuma descrição disponível.",
-                                        style: TextStyle(color: textColor),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text("Vídeo Demonstrativo", style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                                      const SizedBox(height: 8),
-                                      if(exercicio.video != null && exercicio.video!.isNotEmpty)
-                                        VideoExercicioWidget(url: exercicio.video!, textColor: textColor)
-                                      else 
-                                        Container(
-                                          height: 200,
-                                          decoration: BoxDecoration(
-                                            color: Colors.black.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(8),
-                                            border: Border.all(color: textColor.withOpacity(0.2)),
-                                          ),
-                                          child: Center(child: Icon(Icons.play_circle_outline, size: 60, color: textColor.withOpacity(0.7))),
-                                        ),
-                                      const SizedBox(height: 16),
-
-                                      // Campo de carga
-                                      TextField(
-                                        controller: _cargaControllers[item.exercicioId],
-                                        keyboardType: TextInputType.number,
-                                        decoration: const InputDecoration(
-                                          labelText: "Carga realizada (kg)",
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-
-                                      // Campo de mensagem
-                                      TextField(
-                                        controller: _mensagemControllers[item.exercicioId],
-                                        decoration: const InputDecoration(
-                                          labelText: "Mensagem",
-                                          border: OutlineInputBorder(),
-                                        ),
-                                        maxLines: 2,
-                                      ),
-                                      const SizedBox(height: 12),
-
-                                      // Upload de vídeo (placeholder)
-                                      // OutlinedButton.icon(
-                                      //   onPressed: () {
-                                      //     // aqui você pode abrir o picker de vídeo
-                                      //     setState(() {
-                                      //       _videoPaths[item.exercicioId] = "video_demo.mp4";
-                                      //     });
-                                      //   },
-                                      //   icon: const Icon(Icons.video_call),
-                                      //   label: Text(_videoPaths[item.exercicioId] == null
-                                      //       ? "Selecionar vídeo"
-                                      //       : "Vídeo selecionado"),
-                                      // ),
-                                      const SizedBox(height: 16),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
                           ),
                         );
                       },
                     ),
-                  const SizedBox(height: 24),
 
-                  // Botão final de enviar
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
+                    child: ElevatedButton.icon(
+                      onPressed: _enviarDados,
+                      icon: const Icon(Icons.send),
+                      label: const Text("Enviar Treino"),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: Colors.green,
                       ),
-                      onPressed: _enviarDados,
-                      child: const Text("Enviar Treino", style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ],

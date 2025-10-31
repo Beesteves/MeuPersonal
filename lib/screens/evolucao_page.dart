@@ -43,18 +43,12 @@ class ExerciciosScreen extends StatelessWidget {
                   itemBuilder: (context, i) {
                     final ex = exercicio[i];
                     return Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
                       margin: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       child: ListTile(
-                        title: Text(
-                          ex.nome,
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
+                        title: Text(ex.nome, style: Theme.of(context).textTheme.titleLarge),
                         trailing: const Icon(Icons.show_chart,
-                            color: Colors.blue),
+                            color: Colors.blue), // Cor mantida para destaque visual
                         onTap: () {
                           Navigator.push(
                             context,
@@ -92,15 +86,11 @@ class EvolucaoExercicioScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Evolução - ${exercicio.nome}")),
+      appBar: AppBar(title: Text("Evolução: ${exercicio.nome}")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text(
-              "Evolução de Carga",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
             Expanded(
               child: FutureBuilder<List<Evolucao>>(
                 future: DaoEvolucao.buscarEvolucaoExercicio(alunoId, exercicio.id),
@@ -189,7 +179,7 @@ class EvolucaoExercicioScreen extends StatelessWidget {
                             lineBarsData: [
                               LineChartBarData(
                                 isCurved: false,
-                                color: Colors.blue,
+                                color: Theme.of(context).colorScheme.primary,
                                 barWidth: 3,
                                 spots: spots,
                                 dotData: FlDotData(show: true),
@@ -225,7 +215,7 @@ class EvolucaoExercicioScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         "Carga máxima: ${maxCarga.toStringAsFixed(1)} kg em $maxData",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   );

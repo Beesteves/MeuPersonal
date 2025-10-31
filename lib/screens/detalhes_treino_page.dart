@@ -121,61 +121,73 @@ class _DetalhesTreinoPageState extends State<DetalhesTreinoPage> {
                         final textColor = cardColor.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
 
                         return Card(
-                          color: cardColor,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          clipBehavior: Clip.antiAlias,
-                          child: ExpansionTile(
-                            iconColor: textColor,
-                            collapsedIconColor: textColor,
-                            title: Text(exercicio.nome, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Séries: ${item.numSerie} | Reps: ${item.numRepeticao}", style: TextStyle(color: textColor)),
-                                  const SizedBox(height: 4),
-                                  Text("Método: ${metodo.nome}", style: TextStyle(color: textColor)),
-                                ],
-                              ),
-                            ),
-                            children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(dividerColor: textColor.withOpacity(0.2)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0).copyWith(top: 0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Divider(),
-                                      const SizedBox(height: 8),
-                                      Text("Descrição do Exercício", style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        exercicio.descricao.isNotEmpty ? exercicio.descricao : "Nenhuma descrição disponível.",
-                                        style: TextStyle(color: textColor),
-                                      ),
-                                      if(exercicio.video != null && exercicio.video!.isNotEmpty) ...[
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          "Vídeo Demonstrativo",
-                                          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        VideoExercicioWidget(
-                                          url: exercicio.video!,
-                                          textColor: textColor,
-                                        ),                                      
-                                      ],                                        
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        );
+  elevation: 3,
+  margin: const EdgeInsets.symmetric(vertical: 8),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  child: Container(
+    decoration: BoxDecoration(
+      color: cardColor, // agora o fundo pinta tudo
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        collapsedBackgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        iconColor: textColor,
+        collapsedIconColor: textColor,
+        title: Text(
+          exercicio.nome,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textColor, fontSize: 18),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Séries: ${item.numSerie} | Reps: ${item.numRepeticao}",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor)),
+              const SizedBox(height: 4),
+              Text("Método: ${metodo.nome}",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor)),
+            ],
+          ),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Descrição do Exercício",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold, color: textColor)),
+                const SizedBox(height: 4),
+                Text(
+                  exercicio.descricao.isNotEmpty
+                      ? exercicio.descricao
+                      : "Nenhuma descrição disponível.",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textColor),
+                ),
+                if (exercicio.video != null && exercicio.video!.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text("Vídeo Demonstrativo",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold, color: textColor)),
+                  const SizedBox(height: 8),
+                  VideoExercicioWidget(url: exercicio.video!, textColor: textColor),
+                ],
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  ),
+);
+
                       },
                     ),
                 ],

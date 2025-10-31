@@ -26,7 +26,8 @@ class MenuPagePersonal extends StatelessWidget {
       shrinkWrap: true,
       children: [
         _buildMenuButton(
-          icon: Icons.fitness_center,
+          context,
+          icon: Icons.assignment,
           label: 'Treinos',
           onTap: () {
             Navigator.push(
@@ -41,7 +42,8 @@ class MenuPagePersonal extends StatelessWidget {
           },
         ),
         _buildMenuButton(
-          icon: Icons.fitness_center,
+          context,
+          icon: Icons.sports_gymnastics,
           label: 'Exercícios',
           onTap: () {
             Navigator.push(
@@ -56,7 +58,8 @@ class MenuPagePersonal extends StatelessWidget {
           },
         ),
         _buildMenuButton(
-          icon: Icons.account_tree,
+          context,
+          icon: Icons.mediation,
           label: 'Métodos',
           onTap: () {
             Navigator.push(
@@ -74,7 +77,8 @@ class MenuPagePersonal extends StatelessWidget {
         // Botão Assistente só aparece se for personal
         if (userTipo == 'personal')
           _buildMenuButton(
-            icon: Icons.accessibility,
+            context,
+            icon: Icons.support_agent,
             label: 'Assistente',
             onTap: () {
               Navigator.push(
@@ -91,7 +95,8 @@ class MenuPagePersonal extends StatelessWidget {
         // Botão Perfil só aparece se for assistente
         if (userTipo == 'assistente')
           _buildMenuButton(
-            icon: Icons.person,
+            context,
+            icon: Icons.account_circle,
             label: 'Perfil',
             onTap: () {
               Navigator.push(
@@ -106,31 +111,27 @@ class MenuPagePersonal extends StatelessWidget {
     );
   }
 
-  static Widget _buildMenuButton({
+  Widget _buildMenuButton(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade300,
+          color: theme.colorScheme.surfaceVariant,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Colors.black),
+            Icon(icon, size: 48, color: theme.colorScheme.onSurfaceVariant),
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
+              child: Text(label, style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ),
           ],
         ),

@@ -20,8 +20,7 @@ class ListaAlunosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isParaAssistente = assistenteIds != null;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return Scaffold( // O backgroundColor é herdado do tema
       body: Column(
         children: [
           Expanded(
@@ -83,10 +82,7 @@ class ListaAlunosScreen extends StatelessWidget {
                         }
 
                         return Card(
-                          color: Colors.grey[100],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                          // A cor e o shape são herdados do CardTheme
                           margin: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -94,10 +90,7 @@ class ListaAlunosScreen extends StatelessWidget {
                           child: ListTile(
                             title: Text(
                               aluno.nome,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                             subtitle: (aluno.assistenteId != null)
                               ? FutureBuilder<Usuario?>(
@@ -108,7 +101,7 @@ class ListaAlunosScreen extends StatelessWidget {
                                     "Status: $status\n"
                                     "Último treino: $ultimaData\n"
                                     "Assistente: ${assistenteNome}",
-                                    style: const TextStyle(fontSize: 14),
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   );
                                 },
                               )
@@ -116,7 +109,7 @@ class ListaAlunosScreen extends StatelessWidget {
                               "Status: $status\n"
                               "Último treino: $ultimaData\n"
                               "Assistente: ---",
-                              style: const TextStyle(fontSize: 14),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             trailing: const Icon(Icons.chevron_right, size: 28),
                             onTap: () {
@@ -145,14 +138,7 @@ class ListaAlunosScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
+                // O estilo é herdado do ElevatedButtonTheme
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -166,11 +152,6 @@ class ListaAlunosScreen extends StatelessWidget {
                 },
                 child: const Text(
                   "+ Adicionar Aluno",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
                 ),
               ),
             ),

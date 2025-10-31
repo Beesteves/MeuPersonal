@@ -57,77 +57,83 @@ class ListaMetodosScreen extends StatelessWidget {
                     // Define a cor do texto com base na luminosidade da cor de fundo para garantir a legibilidade
                     final textColor = cardColor.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
 
-                    return Card(
-                      color: cardColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: cardColor.withOpacity(1), // garante cor sólida
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                    BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(color: cardColor.withOpacity(0.7)), // borda suave
+                      ),
                       child: ListTile(
                         title: Text(
                           metodo.nome,
                           style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: textColor),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: textColor,
+                          ),
                         ),
                         subtitle: Text(
                           metodo.descricao,
-                          style: TextStyle(fontSize: 14, color: textColor.withOpacity(0.9)),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: textColor.withOpacity(0.9),
+                          ),
                         ),
-                        trailing: podeEditar?
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert),
-                          onSelected: (value) {
-                            if (value == 'editar') {
-                              print('Editar ${metodo.id}');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => CriaMetodoPage(
-                                    personalId: personalIds,
-                                    metodo: metodo,
-                                  ),
-                                ),
-                              );
-                            } else if (value == 'deletar') {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext ctx) {
-                                  return AlertDialog(
-                                    title: const Text('Confirmar Exclusão'),
-                                    content: Text(
-                                        'Tem certeza que deseja deletar o método "${metodo.nome}"?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Cancelar'),
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                        },
+                        trailing: podeEditar
+                            ? PopupMenuButton<String>(
+                                icon: Icon(Icons.more_vert, color: textColor),
+                                onSelected: (value) {
+                                  if (value == 'editar') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => CriaMetodoPage(
+                                          personalId: personalIds,
+                                          metodo: metodo,
+                                        ),
                                       ),
-                                      TextButton(
-                                        child: const Text('Deletar',
-                                            style:
-                                                TextStyle(color: Colors.red)),
-                                        onPressed: () {
-                                          DaoMetodo.deletar(personalIds, metodo.id);
-                                          Navigator.of(ctx).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
+                                    );
+                                  } else if (value == 'deletar') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext ctx) {
+                                        return AlertDialog(
+                                          title: const Text('Confirmar Exclusão'),
+                                          content: Text(
+                                            'Tem certeza que deseja deletar o método "${metodo.nome}"?',
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Cancelar'),
+                                              onPressed: () => Navigator.of(ctx).pop(),
+                                            ),
+                                            TextButton(
+                                              child: const Text('Deletar', style: TextStyle(color: Colors.red)),
+                                              onPressed: () {
+                                                DaoMetodo.deletar(personalIds, metodo.id);
+                                                Navigator.of(ctx).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
-                              );
-                            }
-                          },
-                          itemBuilder: (BuildContext context) =>
-                              <PopupMenuEntry<String>>[
-                            const PopupMenuItem<String>(
-                                value: 'editar', child: Text('Editar')),
-                            const PopupMenuItem<String>(
-                                value: 'deletar', child: Text('Deletar')),
-                          ],
-                        ):null,
+                                itemBuilder: (BuildContext context) => const [
+                                  PopupMenuItem<String>(value: 'editar', child: Text('Editar')),
+                                  PopupMenuItem<String>(value: 'deletar', child: Text('Deletar')),
+                                ],
+                              )
+                            : null,
                       ),
                     );
                   },
@@ -139,13 +145,6 @@ class ListaMetodosScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -158,10 +157,6 @@ class ListaMetodosScreen extends StatelessWidget {
               },
               child: const Text(
                 "+ Adicionar Método",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
               ),
             ),
           ),

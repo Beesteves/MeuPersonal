@@ -82,28 +82,11 @@ class _PerfilPageState extends State<PerfilPage> {
     }
   }
 
-  Future<void> _selecionarData() async {
-    final selecionada = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      locale: const Locale('pt', 'BR'),
-    );
-
-    if (selecionada != null) {
-      setState(() {
-        // _dataController.text = DateFormat('dd/MM/yyyy').format(selecionada);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meu Perfil"),
-        backgroundColor: Colors.blueAccent,
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -123,17 +106,6 @@ class _PerfilPageState extends State<PerfilPage> {
                       ),
                       validator: (v) => v == null || v.isEmpty ? "Informe seu nome" : null,
                     ),
-                    // const SizedBox(height: 16),
-                    // TextFormField(
-                    //   controller: _dataController,
-                    //   readOnly: true,
-                    //   onTap: _selecionarData,
-                    //   decoration: const InputDecoration(
-                    //     labelText: "Data de nascimento",
-                    //     prefixIcon: Icon(Icons.calendar_today),
-                    //     border: OutlineInputBorder(),
-                    //   ),
-                    // ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _emailController,

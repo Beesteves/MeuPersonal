@@ -12,8 +12,8 @@ class CadastroPage extends StatefulWidget {
   const CadastroPage({
     this.personalId,
     required this.tipo,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<CadastroPage> createState() => _CadastroPageState();
@@ -114,18 +114,7 @@ class _CadastroPageState extends State<CadastroPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _register,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[300],
-                    foregroundColor: Colors.black87,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: const Text(
-                    "Cadastrar",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  child: const Text("Cadastrar"),
                 ),
               ),
             ],

@@ -18,6 +18,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(widget.contato.nome)),
       body: Column(
@@ -50,11 +51,11 @@ class _ChatPageState extends State<ChatPage> {
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                           color: isFeedback
-                              ? Colors.green[100]
-                              : isMe ? Colors.blue[200] : Colors.grey[300],
+                              ? theme.colorScheme.primary.withOpacity(0.1)
+                              : isMe ? theme.colorScheme.secondary : theme.colorScheme.onPrimary,
                           borderRadius: BorderRadius.circular(12),
                           border: isFeedback
-                              ? Border.all(color: Colors.green, width: 1)
+                              ? Border.all(color: theme.colorScheme.primary, width: 1)
                               : null,
                         ),
                         child: isFeedback
@@ -62,23 +63,23 @@ class _ChatPageState extends State<ChatPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(Icons.assignment_outlined,
-                                  color: Colors.green, size: 20),
+                                  color: theme.colorScheme.primary, size: 20),
                                   const SizedBox(height: 6),
                                   Text(
                                     "Relatório de Treino",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                                      color: theme.colorScheme.primary,
                                     ),
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
                                     msg.texto,
-                                    style: const TextStyle(height: 1.4),
+                                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
                                   ),
                                 ],
                               )
-                            :Text(msg.texto),
+                            :Text(msg.texto, style: theme.textTheme.bodyMedium),
                       ),
                     );
                   },
@@ -93,10 +94,7 @@ class _ChatPageState extends State<ChatPage> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: "Digite sua mensagem...",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(hintText: "Digite sua mensagem..."),
                   ),
                 ),
                 IconButton(

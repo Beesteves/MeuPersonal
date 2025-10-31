@@ -26,7 +26,6 @@ class ContatosPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Contatos")),
       body: StreamBuilder<List<Usuario>>(
         stream: stream,
         builder: (context, snapshot) {
