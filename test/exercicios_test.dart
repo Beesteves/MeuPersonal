@@ -2,20 +2,25 @@
 import 'package:tcc/models/exercicio.dart';
 
 void main() {
-  group('ExercicioModel', () {
+  group('Exercicio Model', () {
     test('fromMap e toMap devem funcionar corretamente', () {
+      // Arrange
       final map = {
         'nome': 'Agachamento',
         'descricao': 'Exercício para pernas',
         'tipo': 'Força',
-        'video': 'https://video.com/agachamento'
+        'video': 'https://video.com/agachamento',
       };
+      const id = 'abc123';
 
-      final model = Exercicio.fromMap(map, 'abc123', 'personalId');
+      // Act
+      final model = Exercicio.fromMap(map, id, 'personal456');
+      final resultToMap = model.toMap();
 
-      expect(model.id, 'abc123');
+      // Assert
+      expect(model.id, id);
       expect(model.nome, 'Agachamento');
-      expect(model.toMap(), map);
+      expect(resultToMap, map);
     });
   });
 }

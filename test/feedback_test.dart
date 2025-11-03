@@ -8,7 +8,7 @@ void main() {
         id: 'f1',
         alunoId: 'a1',
         treinoId: 't1',
-        textoFB: 'Muito bom!',
+        textoFB: {'f1': 'Muito bom!'},
         videoFB: 'video',
         cargas: Map.from({'e1': 10}),
         data: DateTime.parse('2025-06-03'),
@@ -16,7 +16,7 @@ void main() {
       final map = feedback.toMap();
       final novo = FeedbackModel.fromMap(map, 'f1');
 
-      expect(novo.textoFB, equals('Muito bom!'));
+      expect(novo.textoFB, equals({'f1': 'Muito bom!'}));
     });
 
     test('alunoId é mantido corretamente', () {
@@ -24,7 +24,7 @@ void main() {
         id: 'f2',
         alunoId: 'a2',
         treinoId: 't1',
-        textoFB: 'Ótimo treino',
+        textoFB: {'f2': 'Ótimo treino'},
         videoFB: 'video',
         cargas: Map.from({'e1': 10}),
         data: DateTime.parse('2025-06-03'),
