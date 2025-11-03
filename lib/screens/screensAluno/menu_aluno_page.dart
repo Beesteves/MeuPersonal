@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc/controllers/usuario_controller.dart';
 import 'package:tcc/models/usuario.dart';
-import 'package:tcc/screens/evolucao_page.dart';
+import 'package:tcc/screens/screensAluno/evolucao_page.dart';
 import 'package:tcc/screens/perfil.dart';
 
 class MenuPageAluno extends StatelessWidget {
