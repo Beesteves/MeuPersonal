@@ -237,9 +237,33 @@ class _RealizaTreinoPageState extends State<RealizaTreinoPage> {
                                   exercicio.nome,
                                   style: theme.textTheme.titleLarge?.copyWith(color: textColor),
                                 ),
-                                subtitle: Text(
-                                  "Séries: ${item.numSerie} | Reps: ${item.numRepeticao}\nMétodo: ${metodo.nome}",
-                                  style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Séries: ${item.numSerie} | Reps: ${item.numRepeticao}",
+                                      style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Tooltip(
+                                          message: metodo.descricao.isNotEmpty == true
+                                              ? metodo.descricao
+                                              : "Nenhuma descrição disponível para este método.",
+                                          waitDuration: const Duration(milliseconds: 300),
+                                          showDuration: const Duration(seconds: 4),
+                                          child: Icon(Icons.info_outline, color: textColor, size: 18),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          "Método: ${metodo.nome}",
+                                          style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ],                                
                                 ),
                                 children: [
                                   Padding(

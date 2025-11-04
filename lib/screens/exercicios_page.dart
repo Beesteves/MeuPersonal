@@ -15,7 +15,6 @@ class ListaExerciciosPage extends StatefulWidget {
     required this.userTipo,
   });
 
-  bool get podeEditar => userTipo == 'personal';
 
   @override
   State<ListaExerciciosPage> createState() => _ListaExerciciosPageState();
@@ -24,6 +23,7 @@ class ListaExerciciosPage extends StatefulWidget {
 class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
   String? filtroTipo;
   String busca = '';
+  bool get podeEditar => widget.userTipo == 'personal';
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +40,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
           }
 
           final todosExercicios = snapshot.data ?? [];
-          if (todosExercicios.isEmpty) {
-            return const Center(child: Text('Nenhum exercício cadastrado.'));
-          }
-
+          
           // 🔹 Lista de tipos únicos para o filtro
           final tipos = todosExercicios
               .map((e) => e.tipo?.trim() ?? '')
@@ -102,7 +99,12 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                   ],
                 ),
               ),
-
+              if (todosExercicios.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: Text('Nenhum exercício cadastrado.'),
+                )
+              else
               // Lista de exercícios
               Expanded(
                 child: ListView.builder(
@@ -132,7 +134,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                             ),
                           ],
                         ),
-                        trailing: widget.podeEditar?
+                        trailing: podeEditar?
                          PopupMenuButton<String>(
                           icon: const Icon(Icons.more_vert),
                           onSelected: (value) {
@@ -207,9 +209,10 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                   },
                 ),
               ),
+              
 
               // Botão para adicionar exercício
-              if (widget.podeEditar)
+              if (podeEditar)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(

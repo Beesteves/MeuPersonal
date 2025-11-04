@@ -12,8 +12,8 @@ class MenuPagePersonal extends StatelessWidget {
   const MenuPagePersonal({
     required this.personalIds,
     required this.userTipo,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +49,9 @@ class MenuPagePersonal extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ListaExerciciosPage(
-                  userTipo: userTipo,
+                builder: (_) => ListaExerciciosPage(                  
                   personalId: personalIds,
+                  userTipo: userTipo,
                 ),
               ),
             );
@@ -102,7 +102,7 @@ class MenuPagePersonal extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => PerfilPage(),
+                  builder: (_) => const PerfilPage(),
                 ),
               );
             },
