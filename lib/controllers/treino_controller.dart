@@ -10,9 +10,9 @@ class DaoTreino {
     await _collection.add(treino.toMap());
   }
 
-  static Future<void> editar(Treino treino) async {
-    await _collection.doc(treino.id).update(treino.toMap());
-  }
+  // static Future<void> editar(Treino treino) async {
+  //   await _collection.doc(treino.id).update(treino.toMap());
+  // }
 
   static Future<void> deletar(String id) async {
     await _collection.doc(id).delete();
@@ -75,7 +75,7 @@ class DaoTreino {
     final dataFim = treino.data!.add(Duration(days: treino.duracao * 7));
     final agora = DateTime.now();
 
-    if (dataFim.isAfter(agora) || treino.status == "bloquado"){
+    if (dataFim.isBefore(agora) || treino.status == "bloquado"){
       await _db
     .collection("users")
     .doc(alunoId)

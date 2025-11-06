@@ -10,8 +10,8 @@ class DaoChat {
     return ids.join('_');
   }
 
-  static Stream<List<Mensagem>> streamMensagens(String userId, String contatoId) {
-    final chatId = _chatId(userId, contatoId);
+  static Stream<List<Mensagem>> streamMensagens(String alunoId, String personalId) {
+    final chatId = _chatId(alunoId, personalId);
     return db
         .collection('chats')
         .doc(chatId)

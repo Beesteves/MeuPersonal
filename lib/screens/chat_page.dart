@@ -25,7 +25,9 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: StreamBuilder<List<Mensagem>>(
-              stream: DaoChat.streamMensagens(widget.userId, widget.contato.id),
+              stream: (widget.contato.tipo == 'aluno')
+                  ? DaoChat.streamMensagens(widget.userId, widget.contato.id)
+                  : DaoChat.streamMensagens(widget.contato.id, widget.userId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
