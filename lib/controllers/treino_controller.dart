@@ -10,9 +10,9 @@ class DaoTreino {
     await _collection.add(treino.toMap());
   }
 
-  // static Future<void> editar(Treino treino) async {
-  //   await _collection.doc(treino.id).update(treino.toMap());
-  // }
+  static Future<void> editar(Treino treino) async {
+    await _collection.doc(treino.id).update(treino.toMap());
+  }
 
   static Future<void> deletar(String id) async {
     await _collection.doc(id).delete();
