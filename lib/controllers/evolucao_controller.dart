@@ -24,7 +24,6 @@ static Future<List<Evolucao>> buscarEvolucaoExercicio(
       if (feed.cargas != null && feed.cargas!.containsKey(exercicioId)) {
         final carga = (feed.cargas![exercicioId] ?? 0).toDouble();
 
-        // Converte DateTime → String para Evolucao
         final dataFormatada =
             "${feed.data.year.toString().padLeft(4,'0')}-${feed.data.month.toString().padLeft(2,'0')}-${feed.data.day.toString().padLeft(2,'0')}";
 

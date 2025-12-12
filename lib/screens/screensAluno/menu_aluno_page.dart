@@ -59,16 +59,6 @@ class MenuPageAluno extends StatelessWidget {
                 );
               },
             ),
-            // _buildMenuButton(
-            //   icon: null,
-            //   label: '',
-            //   onTap: () {},
-            // ),
-            // _buildMenuButton(
-            //   icon: null,
-            //   label: '',
-            //   onTap: () {},
-            // ),
           ],
         );
       },

@@ -50,7 +50,6 @@ class _CriaTreinoPageState extends State<CriaTreinoPage> {
   }
 
   Future<void> _carregarExercicios() async {
-    // Usando .first para pegar a lista uma vez, já que o stream pode emitir várias vezes
     final exercicios = await DaoExercicio.getExerciciodoPersonal(widget.personalId).first;
     if (mounted) {
       setState(() {

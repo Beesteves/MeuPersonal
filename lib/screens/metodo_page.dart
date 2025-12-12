@@ -5,7 +5,6 @@ import 'package:tcc/screens/barra_cima_scaffold.dart';
 import 'package:tcc/screens/cria_metodo.dart';
 
 // Função auxiliar para converter uma string hexadecimal em um objeto Color.
-// Movida para fora da classe para melhor performance e organização.
 Color _hexToColor(String hexCode) {
   try {
     final hex = hexCode.replaceAll('#', '');
@@ -54,13 +53,12 @@ class ListaMetodosScreen extends StatelessWidget {
                   itemBuilder: (context, i) {
                     final metodo = metodos[i];
                     final cardColor = _hexToColor(metodo.cor);
-                    // Define a cor do texto com base na luminosidade da cor de fundo para garantir a legibilidade
                     final textColor = cardColor.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
 
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: cardColor.withOpacity(1), // garante cor sólida
+                        color: cardColor.withOpacity(1), 
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                     BoxShadow(
@@ -69,7 +67,7 @@ class ListaMetodosScreen extends StatelessWidget {
                             offset: const Offset(0, 2),
                           ),
                         ],
-                        border: Border.all(color: cardColor.withOpacity(0.7)), // borda suave
+                        border: Border.all(color: cardColor.withOpacity(0.7)), 
                       ),
                       child: ListTile(
                         title: Text(

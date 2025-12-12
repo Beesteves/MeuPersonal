@@ -56,11 +56,6 @@ class DaoChat {
         final texto = feedback.textoFB?[exercicioId] ?? "";
         buffer.writeln("- $nomeEx: ${carga}kg ${texto.isNotEmpty ? "→ $texto" : ""}");
       });
-
-      // if (feedback.videoFB != null && feedback.videoFB!.isNotEmpty) {
-      //   buffer.writeln("\n🎥 Vídeo: ${feedback.videoFB}");
-      // }
-
       final mensagem = buffer.toString();
 
       // Adiciona mensagem no chat

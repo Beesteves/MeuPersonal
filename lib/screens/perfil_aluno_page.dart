@@ -132,7 +132,6 @@ class _BotoesAcao extends StatelessWidget {
             onPressed: () {
               _showOpcoesAdicionarTreino(context, aluno, aluno.personalId!);
             },
-            // Estilo herdado do ElevatedButtonTheme
           ),
         ),
         const SizedBox(height: 10),
@@ -143,10 +142,8 @@ class _BotoesAcao extends StatelessWidget {
               icon: const Icon(Icons.group_add),
               label: const Text("Adicionar Assistente"),
               onPressed: () {
-                // Abre um diálogo para selecionar um assistente existente
                 _showDialogoSelecaoAssistente(context, aluno);
               },
-              // Estilo herdado do ElevatedButtonTheme
             ),
           ),
       ],
@@ -243,7 +240,7 @@ void _showOpcoesAdicionarTreino(
               leading: const Icon(Icons.add_circle_outline),
               title: const Text('Criar novo treino do zero'),
               onTap: () {
-                Navigator.pop(ctx); // Fecha o BottomSheet
+                Navigator.pop(ctx); 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -256,7 +253,7 @@ void _showOpcoesAdicionarTreino(
               leading: const Icon(Icons.content_copy),
               title: const Text('Usar modelo de treino existente'),
               onTap: () {
-                Navigator.pop(ctx); // Fecha o BottomSheet
+                Navigator.pop(ctx); 
                 _showDialogoSelecaoModelo(context, aluno, personalId);
               },
             ),
@@ -337,7 +334,7 @@ void _showDialogoSelecaoAssistente(BuildContext context, Usuario aluno) {
                       try {
                         await DaoUser.definirAssistenteParaAluno(
                             aluno.id, assistente.id);
-                        Navigator.pop(dialogContext); // Fecha o diálogo
+                        Navigator.pop(dialogContext); 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: Text(
@@ -445,7 +442,6 @@ void _showDialogoSelecaoModelo(
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Treino "${modelo.nome}" atribuído!')),
                         );
-                        // Se quiser atualizar a tela atual, use setState/Stream no perfil
                       } catch (e) {
                         Navigator.pop(dialogContext);
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -41,7 +41,7 @@ class _AppState extends State<App> {
       if (doc.exists) {
         setState(() {
           _tipoUsuario = doc['tipo'];
-          _userId = uid;      // Guarda o UID no estado
+          _userId = uid;      
           _isLoading = false;
           _usuario = Usuario.fromMap(doc.data()!);
         });
@@ -53,7 +53,6 @@ class _AppState extends State<App> {
         });
       }
     } else {
-      // Usuário não logado (opcional: tratar essa situação)
       setState(() {
         _tipoUsuario = "desconhecido";
         _isLoading = false;

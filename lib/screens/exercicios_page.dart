@@ -122,11 +122,6 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Text(
-                            //   exercicio.descricao,
-                            //   maxLines: 2,
-                            //   overflow: TextOverflow.ellipsis,
-                            // ),
                             const SizedBox(height: 5),
                             Text(
                               'Tipo: ${exercicio.tipo ?? "Não informado"}',
@@ -166,7 +161,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                                       TextButton(
                                         child: const Text('Deletar',
                                             style:
-                                                TextStyle(color: Colors.red)), // Manter cor para ação destrutiva
+                                                TextStyle(color: Colors.red)), 
                                         onPressed: () {
                                           DaoExercicio.deletar(widget.personalId, exercicio.id);
                                           Navigator.of(ctx).pop();
@@ -199,7 +194,7 @@ class _ListaExerciciosPageState extends State<ListaExerciciosPage> {
                             const SizedBox(height: 8),
                             VideoExercicioWidget(
                               url: exercicio.video!,
-                              textColor: Theme.of(context).colorScheme.onSurface, // Usar cor do tema
+                              textColor: Theme.of(context).colorScheme.onSurface, 
                             ),                                      
                           ],           
 

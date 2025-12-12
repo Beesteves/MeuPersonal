@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
 }
 
 
-/// Tema principal do app (inspire-se no visual do TrainingPeaks, porém em vermelho)
+/// Tema principal do app 
 final ThemeData appTheme = ThemeData.light().copyWith(
   // Paleta principal (variações de vermelho)
   colorScheme: const ColorScheme.light().copyWith(

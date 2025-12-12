@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tcc/firebase_options.dart';
 import 'package:tcc/models/usuario.dart';
@@ -13,10 +12,6 @@ class DaoUser{
     );
   }
 
-  // static String? _getUid() {
-  //   final User? usuario = FirebaseAuth.instance.currentUser;
-  //   return usuario?.uid;
-  // }
 
   static Stream<List<Usuario>> getAlunosDoPersonal(String personalId) {
     return db

@@ -55,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // A barra superior agora é um AppBar, que usará o appBarTheme.
       appBar: AppBar(
         title: const Text("LOGIN"),
         centerTitle: true,
@@ -71,7 +70,6 @@ class _LoginPageState extends State<LoginPage> {
                     // 🔹 Campo de email
                     TextFormField(
                       controller: _emailController,
-                      // A decoração é herdada do inputDecorationTheme.
                       decoration: const InputDecoration(labelText: "Email"),
                       validator: (v) =>
                           v == null || v.isEmpty ? "Informe o email" : null,
@@ -82,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      // A decoração é herdada do inputDecorationTheme.
                       decoration: const InputDecoration(labelText: "Senha"),
                       validator: (v) =>
                           v == null || v.isEmpty ? "Informe a senha" : null,
@@ -95,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _login,
-                        // O estilo é herdado do elevatedButtonTheme.
                         child: const Text("Entrar"),
                       ),
                     ),
@@ -107,7 +103,6 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.pushNamed(context, '/cadastroPersonal');
                       },
-                      // O estilo é herdado do textButtonTheme.
                       child: const Text('Cadastro de Personal'),
                     ),
                   ],

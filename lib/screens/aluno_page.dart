@@ -20,7 +20,7 @@ class ListaAlunosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isParaAssistente = assistenteIds != null;
 
-    return Scaffold( // O backgroundColor é herdado do tema
+    return Scaffold( 
       body: Column(
         children: [
           Expanded(
@@ -82,7 +82,6 @@ class ListaAlunosScreen extends StatelessWidget {
                         }
 
                         return Card(
-                          // A cor e o shape são herdados do CardTheme
                           margin: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -138,7 +137,6 @@ class ListaAlunosScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                // O estilo é herdado do ElevatedButtonTheme
                 onPressed: () {
                   Navigator.push(
                     context,

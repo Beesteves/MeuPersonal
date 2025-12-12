@@ -193,7 +193,6 @@ class _GraficoEvolucaoMini extends StatelessWidget {
                   lineTouchData: LineTouchData(
                     handleBuiltInTouches: true,
                     touchTooltipData: LineTouchTooltipData(
-                      //tooltipBgColor: theme.colorScheme.primary,
                       getTooltipItems: (touchedSpots) => touchedSpots.map((t) {
                         int index = spots.indexWhere((s) => s.x == t.x);
                         final label = (index >= 0 && index < labels.length)

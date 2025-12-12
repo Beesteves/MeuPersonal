@@ -34,7 +34,6 @@ class _DetalhesTreinoPageState extends State<DetalhesTreinoPage> {
 
   Future<void> _carregarDados() async {
     try {
-      // Carrega exercícios e métodos em paralelo para mais performance
       final results = await Future.wait([
         DaoExercicio.getExerciciodoPersonal(widget.personalId).first,
         DaoMetodo.getMetodosDoPersonal(widget.personalId).first,
@@ -126,7 +125,7 @@ class _DetalhesTreinoPageState extends State<DetalhesTreinoPage> {
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   child: Container(
     decoration: BoxDecoration(
-      color: cardColor, // agora o fundo pinta tudo
+      color: cardColor, 
       borderRadius: BorderRadius.circular(12),
     ),
     child: Theme(

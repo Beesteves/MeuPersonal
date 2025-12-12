@@ -1,16 +1,78 @@
-# tcc
+# 📱 **Meu Personal**
 
-A new Flutter project.
+Aplicativo desenvolvido em **Flutter** para auxiliar **personais trainers** na prescrição e acompanhamento de treinos de seus alunos.  
+A plataforma permite que o personal gerencie toda sua base de alunos, treinos, exercícios, métodos e assistentes — enquanto o aluno visualiza seus treinos, envia feedbacks e conversa diretamente com o personal.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🎯 **Objetivo do Projeto**
 
-A few resources to get you started if this is your first Flutter project:
+Criar uma solução completa para personal trainers que desejam **organizar**, **monitorar** e **comunicar-se** com seus alunos de maneira simples, rápida e profissional.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🧩 **Funcionalidades Principais**
+
+### 👤 **Para o Personal Trainer**
+- Cadastrar personal trainer  
+- Gerenciar alunos  
+- Gerenciar assistentes  
+- Gerenciar métodos de treino  
+- Gerenciar exercícios  
+- Criar e gerenciar treinos  
+- Atribuir treinos aos alunos  
+- Conectar assistentes com alunos  
+- Ver evolução dos alunos  
+
+### 🧑‍💻 **Para o Aluno**
+- Visualizar treinos  
+- Enviar feedbacks  
+- Enviar mensagens para o personal  
+- Acompanhar sua evolução  
+
+---
+
+## 🏗️ **Tecnologias Utilizadas**
+
+- **Flutter**  
+- **Firebase Authentication**  
+- **Firestore (NoSQL Database)**  
+
+---
+
+## 🚀 **Deploy da Versão Web**
+
+🔗 **Acesse aqui:**  
+https://meu-personal-922ee.web.app/
+
+---
+
+## 🛠️ **Instalação e Execução**
+
+### Clone o repositório:
+```sh
+git clone https://github.com/Beesteves/MeuPersonal.git
+```
+
+### Acesse a pasta do projeto:
+```sh
+cd MeuPersonal
+```
+
+### Instale as dependências:
+```sh
+flutter pub get
+```
+
+### Execute o projeto:
+```sh
+flutter run
+```
+
+## 📁 **Repositório Oficial**
+
+🔗 https://github.com/Beesteves/MeuPersonal.git
+
+## 👩‍💻 **Autora**
+
+**Beatriz Esteves Gonçalves**
